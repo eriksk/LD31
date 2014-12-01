@@ -161,6 +161,12 @@ public class Entity implements ITweenable, Disposable{
 	public void setScaleY(float y) {
 		transform.scale.y = y;		
 	}
+	
+	@Override
+	public void setScale(float scalar) {
+		transform.scale.x = scalar;
+		transform.scale.y = scalar;
+	}
 
 	@Override
 	public void setColor(float r, float g, float b, float a) {

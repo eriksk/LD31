@@ -18,7 +18,7 @@ public class LD31 extends ApplicationAdapter {
 	public void render () {
 		game.update(Gdx.graphics.getDeltaTime() * 1000f);
 		
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		game.draw();

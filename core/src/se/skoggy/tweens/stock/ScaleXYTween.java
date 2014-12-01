@@ -7,22 +7,18 @@ import com.badlogic.gdx.math.Interpolation;
 
 public class ScaleXYTween  extends Tween{
 
-	private float startX;
-	private float startY;
-	private float endX;
-	private float endY;
+	private float start;
+	private float end;
 
-	public ScaleXYTween(ITweenable subject, Interpolation interpolation, float duration, float startX, float startY, float endX, float endY) {
+	public ScaleXYTween(ITweenable subject, Interpolation interpolation, float duration, float start, float end) {
 		super(subject, interpolation, duration);
-		this.startX = startX;
-		this.startY = startY;
-		this.endX = endX;
-		this.endY = endY;
+		this.start = start;
+		this.end = end;
 	}
 
 	@Override
 	public void tween(float progress, ITweenable subject, Interpolation interpolation) {
-		subject.setScale(interpolation.apply(startX, endX, progress), interpolation.apply(startY, endY, progress));
+		subject.setScale(interpolation.apply(start, end, progress));
 	}
 
 }
