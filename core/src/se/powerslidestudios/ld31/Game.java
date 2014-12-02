@@ -1,6 +1,7 @@
 package se.powerslidestudios.ld31;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 
 import se.powerslidestudios.scenes.GameScene;
 import se.powerslidestudios.scenes.MenuScene;
@@ -18,10 +19,12 @@ public class Game extends BaseGame implements IGameContext{
 	private ContentManager content;
 	
 	private int width, height;
+	private Vector2 virtualResolution;
 	
 	public Game(int width, int height) {
 		this.width = width;
 		this.height = height;
+		virtualResolution = new Vector2(1280, 720);
 	}
 
 	public void resize(int width, int height) {
@@ -38,6 +41,11 @@ public class Game extends BaseGame implements IGameContext{
 		manager = new SceneManager();
 		//manager.pushScene(new GameScene(this));
 		manager.pushScene(new MenuScene(this));
+	}
+	
+	@Override
+	public Vector2 virtualResolution() {
+		return virtualResolution;
 	}
 	
 	@Override
@@ -72,7 +80,7 @@ public class Game extends BaseGame implements IGameContext{
 	
 	@Override
 	public void update(float dt) {
-		ServiceLocator.context.locate(ITouchInput.class).update(width, height);
+		ServiceLocator.context.locate(ITouchInput.class).update(virtualResolution);
 		manager.update(dt);
 	}
 	

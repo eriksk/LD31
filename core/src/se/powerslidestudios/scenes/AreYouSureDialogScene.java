@@ -46,8 +46,8 @@ public class AreYouSureDialogScene extends Scene{
 	public void load() {
 		super.load();
 
-		uiCam = new Camera2D(context.width(), context.height(), null);
-		uiCam.setPosition(0, 0);
+		uiCam = new Camera2D(width, height, null);
+		uiCam.setPosition(width/2, height/2);
 		uiCam.update();
 		
 		uiFactory = new UiFactory(content(), tweens);
@@ -73,19 +73,19 @@ public class AreYouSureDialogScene extends Scene{
 				btnYes, 
 				Interpolation.pow2, transitionOutDuration(), 
 				btnYes.transform.position.x, btnYes.transform.position.y, 
-				-getWidth(), btnYes.transform.position.y));
+				-200, btnYes.transform.position.y));
 		
 		tween(new PositionXYTween(
 				btnNo, 
 				Interpolation.pow2, transitionOutDuration(), 
 				btnNo.transform.position.x, btnNo.transform.position.y, 
-				getWidth(), btnNo.transform.position.y));
+				width + 200, btnNo.transform.position.y));
 		
 		tween(new PositionXYTween(
 				box, 
 				Interpolation.pow2, transitionOutDuration(), 
 				box.transform.position.x, box.transform.position.y, 
-				0, box.transform.position.y - getHeight()));
+				width * 0.5f, box.transform.position.y - height));
 		
 		tween(new ScaleXYTween(
 				label, 
@@ -105,13 +105,14 @@ public class AreYouSureDialogScene extends Scene{
 		
 		se.skoggy.ui.Label label = uiFactory.createLabel("Are you sure?");
 		
-		MessageBox box = uiFactory.createMessageBox(Vector2.Zero);
+		MessageBox box = uiFactory.createMessageBox(new Vector2(width * 0.5f, height * 0.5f));
 		
 		TouchButton btnYes = uiFactory.createRoundIconButton("arrow_left", "green");
 		TouchButton btnNo = uiFactory.createRoundIconButton("arrow_right", "red");
 
-		btnYes.setPosition(getWidth()* -0.2f, 140);
-		btnNo.setPosition(getWidth()* 0.2f, 140);
+		label.setPosition(width * 0.5f, height * 0.5f);
+		btnYes.setPosition(width * 0.3f, height * 0.72f);
+		btnNo.setPosition(width * 0.7f, height * 0.72f);
 
 		elements.add(box);
 		elements.add(btnYes);

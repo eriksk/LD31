@@ -68,8 +68,10 @@ public class TouchButton extends Entity implements UIElement{
 		
 		ITouchInput touch = ServiceLocator.context.locate(ITouchInput.class);
 		
-		if(touch.pressed() && contains(touch.x(), touch.y())){
-			clicked();
+		if(touch.pressed()){
+			if(contains(touch.x(), touch.y())){
+				clicked();
+			}
 		}
 	}
 	

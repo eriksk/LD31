@@ -19,16 +19,19 @@ public abstract class Scene extends Stage{
 	protected SpriteBatch spriteBatch;
 	protected IGameContext context;
 	protected TweenManager tweens;
+	protected int width;
+	protected int height;
 
 	public Scene(IGameContext context) {
-		super(new StretchViewport(context.width(), context.height()));
+		super(new StretchViewport(context.virtualResolution().x, context.virtualResolution().y));
 		this.context = context;
+		this.width = (int)context.virtualResolution().x;
+		this.height = (int)context.virtualResolution().y;
 		tweens = new TweenManager();
 	}
 
 	protected void createCam(Rectangle area){
-		setViewport(new StretchViewport(context.width(), context.height()));
-		cam = new Camera2D(context.width(), context.height(), area);
+		cam = new Camera2D(width, height, area);
 	}
 
 	void setSceneManager(SceneManager manager){

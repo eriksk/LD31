@@ -44,8 +44,8 @@ public class MenuScene extends Scene{
 	@Override
 	public void load() {
 		super.load();
-		uiCam = new Camera2D(context.width(), context.height(), null);
-		uiCam.setPosition(0, 0);
+		uiCam = new Camera2D(width, height, null);
+		uiCam.setPosition(width/2, height/2);
 		
 		uiFactory = new UiFactory(content(), tweens);
 		elements = new ArrayList<UIElement>();
@@ -56,11 +56,9 @@ public class MenuScene extends Scene{
 		
 		tween(new ScaleXTween(gameTitle, Interpolation.elasticOut, 1000f, 0f, 2f).setWait(200f));
 		tween(new ScaleYTween(gameTitle, Interpolation.elasticOut, 1000f, 1f, 2f));
-		tween(new PositionXYTween(gameTitle, Interpolation.pow2, 300f, 0f, -400f, 0f, -100f));
+		tween(new PositionXYTween(gameTitle, Interpolation.pow2, 300f, width * 0.5f, height * -0.25f, width * 0.5f, height * 0.35f));
 		
 		createUi();
-		
-		
 	}
 	
 	private void createUi() {
@@ -69,13 +67,10 @@ public class MenuScene extends Scene{
 		TouchButton btnRestart = uiFactory.createRoundIconButton("restart", "yellow");
 		TouchButton btnSettings = uiFactory.createRoundIconButton("settings", "yellow");
 
-		btnPlay.setPositionX(this.getWidth()* -0.25f);
-		btnSettings.setPositionX(this.getWidth() * 0.25f);
-
-		btnPlay.setPositionY(getHeight() * 0.25f);
-		btnRestart.setPositionY(getHeight() * 0.25f);
-		btnSettings.setPositionY(getHeight() * 0.25f);
-		
+		btnPlay.setPosition(width * 0.25f, height * 0.75f);
+		btnRestart.setPosition(width * 0.5f, height * 0.75f);
+		btnSettings.setPosition(width * 0.75f, height * 0.75f);
+				
 		elements.add(btnPlay);
 		elements.add(btnRestart);
 		elements.add(btnSettings);
@@ -96,8 +91,7 @@ public class MenuScene extends Scene{
 	}
 
 	@Override
-	public void update(float dt) {
-	
+	public void update(float dt) {	
 		for (UIElement uiElement : elements) {
 			uiElement.update(dt);
 		}

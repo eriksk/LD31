@@ -43,6 +43,7 @@ public class SceneManager {
 		scene.setSceneManager(this);
 		if(!isPreloaded)
 			scene.load();
+		scene.update(16f);
 		setState(TRANSITION_IN);
 	}
 
