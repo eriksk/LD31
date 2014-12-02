@@ -3,6 +3,7 @@ package se.skoggy.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.skoggy.atlases.DynamicTexture;
 import se.skoggy.entity.Transform;
 import se.skoggy.tweens.ITweenable;
 
@@ -24,6 +25,25 @@ public class Entity implements ITweenable, Disposable{
 	public Color color;
 	private Rectangle region;
 
+
+	public Entity(){
+		this((TextureRegion)null);	
+	}
+	
+	public Entity(DynamicTexture dynamicTexture){
+		this(new TextureRegion(
+				dynamicTexture.texture, 
+				dynamicTexture.source.x, 
+				dynamicTexture.source.y, 
+				dynamicTexture.source.w, 
+				dynamicTexture.source.h));
+		
+		setSource(dynamicTexture.source.x, 
+				dynamicTexture.source.y, 
+				dynamicTexture.source.w, 
+				dynamicTexture.source.h);
+	}
+	
 	public Entity(TextureRegion texture){
 		textureRegion = texture;
 		transform = new Transform();
@@ -31,7 +51,8 @@ public class Entity implements ITweenable, Disposable{
 		color = new Color(1f, 1f, 1f, 1f);
 		flipX = false;
 		region = new Rectangle();
-		setSource(0,  0,  texture.getTexture().getWidth(),  texture.getTexture().getHeight());
+		if(texture != null)
+			setSource(0,  0,  texture.getTexture().getWidth(),  texture.getTexture().getHeight());
 
 		behaviors = new ArrayList<EntityBehavior>();
 
@@ -79,6 +100,14 @@ public class Entity implements ITweenable, Disposable{
 		region.y = y;
 		region.width = width;
 		region.height = height;
+	}
+	
+	public float width(){
+		return region.width;
+	}
+
+	public float height(){
+		return region.height;
 	}
 
 	public Rectangle getSource() {

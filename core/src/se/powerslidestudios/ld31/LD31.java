@@ -9,6 +9,13 @@ public class LD31 extends ApplicationAdapter {
 	Game game;
 	
 	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+	
+		game.resize(width, height);
+	}
+	
+	@Override
 	public void create () {		
 		game = new Game(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		game.load();
@@ -18,7 +25,7 @@ public class LD31 extends ApplicationAdapter {
 	public void render () {
 		game.update(Gdx.graphics.getDeltaTime() * 1000f);
 		
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(144f / 255f, 204f / 255f, 238f / 255f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		game.draw();

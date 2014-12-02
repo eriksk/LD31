@@ -1,6 +1,7 @@
 package se.skoggy.content;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,12 +15,28 @@ public class ContentManager implements Disposable{
 	String contentRoot;
 	boolean flipYOnSprites;
 
+	private HashMap<String, Texture> textureCache;
+	
 	public ContentManager(String contentRoot, boolean flipYOnSprites){
 		this.contentRoot = contentRoot;
 		this.flipYOnSprites = flipYOnSprites;
 		if(!this.contentRoot.endsWith("/") && this.contentRoot != ""){
 			this.contentRoot += "/";
 		}
+		textureCache = new HashMap<String, Texture>();
+	}
+
+	public String getRootDirectory() {
+		return contentRoot;
+	}
+
+	public Texture loadRawTexture(String name) {
+		if(textureCache.containsKey(name))
+			return textureCache.get(name);
+		
+		Texture texture = new Texture(Gdx.files.internal(contentRoot + name + ".png"));
+		textureCache.put(name, texture);
+		return texture;
 	}
 
 	public TextureRegion loadTexture(String name){
@@ -27,7 +44,15 @@ public class ContentManager implements Disposable{
 	}
 	
 	public TextureRegion loadTexture(String name, String fileEnding){
-		TextureRegion texture = new TextureRegion(new Texture(Gdx.files.internal(MessageFormat.format("{0}{1}{2}", contentRoot, name, fileEnding))));
+		
+		Texture tex = null;
+		if(textureCache.containsKey(name)){
+			tex = textureCache.get(name);
+		}else{
+			tex = new Texture(Gdx.files.internal(MessageFormat.format("{0}{1}{2}", contentRoot, name, fileEnding)));
+		}
+		
+		TextureRegion texture = new TextureRegion(tex);
 		texture.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		texture.flip(false, flipYOnSprites);
 		return texture;
@@ -48,7 +73,7 @@ public class ContentManager implements Disposable{
 	}
 
 	public BitmapFont loadFont(String name){
-		return new BitmapFont(Gdx.files.internal("fonts/" + name + ".fnt"), Gdx.files.internal("gfx/" + name + ".png"), true);
+		return new BitmapFont(Gdx.files.internal(MessageFormat.format("{0}fonts/{1}.fnt", contentRoot, name)), Gdx.files.internal(MessageFormat.format("{0}fonts/{1}.png", contentRoot, name)), true);
 	}
 
 	@Override

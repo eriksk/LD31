@@ -8,11 +8,18 @@ public abstract class Tween {
 	private Interpolation interpolation;
 	private float duration;
 	private float current;
+	private float waitBeforeStart;
 	
 	public Tween(ITweenable subject, Interpolation interpolation, float duration) {
 		this.subject = subject;
 		this.interpolation = interpolation;
 		this.duration = duration;
+		waitBeforeStart = 0;
+	}
+	
+	public Tween setWait(float waitBeforeStart){
+		this.waitBeforeStart = waitBeforeStart;
+		return this;
 	}
 	
 	public abstract void tween(float progress, ITweenable subject, Interpolation interpolation);
@@ -26,10 +33,15 @@ public abstract class Tween {
 	}
 	
 	public void update(float dt){
-		current += dt;
-		if(current > duration)
-			current = duration;
+		if(waitBeforeStart >= 0f)
+			waitBeforeStart -= dt;
 		
-		tween(progress(), subject, interpolation);
+		if(waitBeforeStart < 0f){
+			current += dt;
+			if(current > duration)
+				current = duration;
+			
+			tween(progress(), subject, interpolation);
+		}
 	}
 }

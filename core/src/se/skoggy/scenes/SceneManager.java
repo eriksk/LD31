@@ -102,6 +102,7 @@ public class SceneManager {
 	}
 
 	protected void removeActiveScene() {
+		activeScene.beforeRemoved();
 		scenes.remove(activeScene);
 		activeScene = null;
 	}
@@ -112,6 +113,11 @@ public class SceneManager {
 			switch (state) {
 				case ACTIVE:
 					activeScene.update(dt);
+					for (Scene scene : scenes) {
+						if(scene != activeScene){
+							scene.updatePassive(dt);
+						}
+					}
 				break;
 				case TRANSITION_IN:
 					if(currentProgress / activeScene.transitionInDuration() > 1f){

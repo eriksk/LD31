@@ -5,6 +5,7 @@ import se.skoggy.game.IGameContext;
 import se.skoggy.tweens.Tween;
 import se.skoggy.tweens.TweenManager;
 import se.skoggy.utils.Camera2D;
+import se.skoggy.utils.GLHelpers;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -17,7 +18,7 @@ public abstract class Scene extends Stage{
 	protected Camera2D cam;
 	protected SpriteBatch spriteBatch;
 	protected IGameContext context;
-	private final TweenManager tweens;
+	protected TweenManager tweens;
 
 	public Scene(IGameContext context) {
 		super(new StretchViewport(context.width(), context.height()));
@@ -52,8 +53,14 @@ public abstract class Scene extends Stage{
 	
 	public void load(){
 		spriteBatch = new SpriteBatch();
+		spriteBatch.enableBlending();
+		GLHelpers.enableAlphaBlending(spriteBatch);
 		createCam(getBoundaryArea());
 		cam.setPosition(0, 0);
+	}
+	public void updatePassive(float dt){
+		tweens.update(dt);
+		cam.update();
 	}
 	public void update(float dt){
 		tweens.update(dt);
@@ -67,5 +74,8 @@ public abstract class Scene extends Stage{
 	}
 	public abstract void draw();
 	public void drawTransitionIn(float progress){};
-	public void drawTransitionOut(float progress){};
+	public void drawTransitionOut(float progress){}
+
+	public void beforeRemoved() {	
+	}
 }

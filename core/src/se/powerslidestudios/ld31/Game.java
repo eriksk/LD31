@@ -1,11 +1,16 @@
 package se.powerslidestudios.ld31;
 
+import com.badlogic.gdx.Gdx;
+
 import se.powerslidestudios.scenes.GameScene;
+import se.powerslidestudios.scenes.MenuScene;
 import se.skoggy.content.ContentManager;
 import se.skoggy.game.IGameContext;
+import se.skoggy.input.ITouchInput;
 import se.skoggy.scenes.Scene;
 import se.skoggy.scenes.SceneManager;
 import se.skoggy.utils.BaseGame;
+import se.skoggy.utils.ServiceLocator;
 
 public class Game extends BaseGame implements IGameContext{
 
@@ -18,6 +23,11 @@ public class Game extends BaseGame implements IGameContext{
 		this.width = width;
 		this.height = height;
 	}
+
+	public void resize(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
 	
 	@Override
 	public void load() {		
@@ -26,7 +36,13 @@ public class Game extends BaseGame implements IGameContext{
 		content = new ContentManager("content", true);
 		
 		manager = new SceneManager();
-		manager.pushScene(new GameScene(this));
+		//manager.pushScene(new GameScene(this));
+		manager.pushScene(new MenuScene(this));
+	}
+	
+	@Override
+	public void exit() {
+		Gdx.app.exit();
 	}
 	
 	@Override
@@ -56,6 +72,7 @@ public class Game extends BaseGame implements IGameContext{
 	
 	@Override
 	public void update(float dt) {
+		ServiceLocator.context.locate(ITouchInput.class).update(width, height);
 		manager.update(dt);
 	}
 	

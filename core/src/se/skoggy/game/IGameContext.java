@@ -9,4 +9,5 @@ public interface IGameContext {
 	public ContentManager getContent();
 	public void changeScene(Scene scene);
 	public void changeScene(Scene scene, boolean isPreloaded);
+	public void exit();
 }

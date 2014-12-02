@@ -12,8 +12,11 @@ public class Rand {
 	public static void setSeed(int seed){
 		r = new Random(seed);
 	}
-	
+
 	public static float rand(){
 		return r.nextFloat();
+	}
+	public static float rand(float min, float max){
+		return min + r.nextFloat() * (max - min);
 	}
 }
