@@ -61,11 +61,16 @@ public class MenuScene extends Scene{
 		createUi();
 	}
 	
+	@Override
+	public float transitionOutDuration() {
+		return 500f;
+	}
+	
 	private void createUi() {
 
-		TouchButton btnPlay = uiFactory.createRoundIconButton("play", "yellow");
-		TouchButton btnRestart = uiFactory.createRoundIconButton("restart", "yellow");
-		TouchButton btnSettings = uiFactory.createRoundIconButton("settings", "yellow");
+		final TouchButton btnPlay = uiFactory.createRoundIconButton("play", "yellow", 1000f);
+		final TouchButton btnRestart = uiFactory.createRoundIconButton("restart", "yellow", 1000f);
+		final TouchButton btnSettings = uiFactory.createRoundIconButton("settings", "yellow", 1000f);
 
 		btnPlay.setPosition(width * 0.25f, height * 0.75f);
 		btnRestart.setPosition(width * 0.5f, height * 0.75f);
@@ -88,6 +93,22 @@ public class MenuScene extends Scene{
 				}));
 			}
 		});
+		
+		btnPlay.addListener(new TouchButtonEventListener() {
+			@Override
+			public void clicked(TouchButton button) {
+				manager.popScene();
+				tween(new ScaleXYTween(btnPlay, Interpolation.pow2, transitionOutDuration(), 1f, 0f));
+				tween(new ScaleXYTween(btnRestart, Interpolation.pow2, transitionOutDuration(), 1f, 0f));
+				tween(new ScaleXYTween(btnSettings, Interpolation.pow2, transitionOutDuration(), 1f, 0f));
+			}
+		});	
+	}
+	
+	@Override
+	public void beforeRemoved() {
+		super.beforeRemoved();
+		manager.pushScene(new GameScene(context));
 	}
 
 	@Override
@@ -100,6 +121,27 @@ public class MenuScene extends Scene{
 		super.update(dt);
 	}
 	
+	@Override
+	public void updatePassive(float dt) {
+		for (UIElement uiElement : elements) {
+			uiElement.update(dt);
+		}
+		
+		uiCam.update();
+		super.updatePassive(dt);
+	}
+	
+	@Override
+	public void updateTransitionOut(float dt, float progress) {
+		super.updateTransitionOut(dt, progress);
+		update(dt);
+	}
+	
+	@Override
+	public void drawTransitionOut(float progress) {
+		super.drawTransitionOut(progress);
+		draw();
+	}
 	
 	@Override
 	public void draw() {	

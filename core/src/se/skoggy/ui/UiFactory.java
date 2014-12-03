@@ -28,7 +28,7 @@ public class UiFactory {
 	public UiFactory(ContentManager content, TweenManager tweens) {
 		this.content = content;
 		this.tweens = tweens;
-		font = content.loadFont("universal_fruitcake_32");
+		font = content.loadFont("universal_fruitcake_64");
 		iconAtlas = new TextureAtlas(content);
 		iconAtlas.register("atlases/icon_toolset");
 	}
@@ -37,10 +37,10 @@ public class UiFactory {
 		return font;
 	}
 
-	public TouchButton createRoundIconButton(String iconName, String buttonColor){		
+	public TouchButton createRoundIconButton(String iconName, String buttonColor, float transitionDuration){		
 		TouchButton button = new TouchButton(iconAtlas.getTexture("button_round_" + buttonColor), iconAtlas.getTexture("icon_" + iconName));	
 		button.setScale(0f);
-		tweens.add(new ScaleXYTween(button, Interpolation.bounceOut, 1000f, 0f, 1f).setWait(Rand.rand(100f, 400f)));
+		tweens.add(new ScaleXYTween(button, Interpolation.bounceOut, transitionDuration, 0f, 1f).setWait(Rand.rand(100f, 400f)));
 		button.addListener(new TouchButtonEventListener() {
 			@Override
 			public void clicked(TouchButton button) {
@@ -51,22 +51,22 @@ public class UiFactory {
 		return button;
 	}
 	
-	public MessageBox createMessageBox(Vector2 position){
+	public MessageBox createMessageBox(Vector2 position, float transitionDuration){
 		MessageBox mb = new MessageBox(iconAtlas);
 
-		tweens.add(new ScaleXTween(mb, Interpolation.elasticOut, 1000f, 0f, 0.8f).setWait(200f));
-		tweens.add(new ScaleYTween(mb, Interpolation.elasticOut, 1000f, 0f, 0.8f));
-		tweens.add(new PositionXYTween(mb, Interpolation.pow2, 300f, position.x, position.y - 800f, position.x, position.y));
+		tweens.add(new ScaleXTween(mb, Interpolation.elasticOut, 600f, 0f, 0.8f).setWait(200f));
+		tweens.add(new ScaleYTween(mb, Interpolation.elasticOut, 600f, 0f, 0.8f));
+		tweens.add(new PositionXYTween(mb, Interpolation.pow2, transitionDuration, position.x, position.y - 800f, position.x, position.y));
 		
 		
 		return mb;
 	}
 	
-	public Label createLabel(String text){
+	public Label createLabel(String text, float minWait, float maxWait){
 		se.skoggy.ui.Label label = new se.skoggy.ui.Label(text, TextAlign.center);
 
-		tweens.add(new ScaleXTween(label, Interpolation.elasticOut, 1000f, 0f, 1f).setWait(200f));
-		tweens.add(new ScaleYTween(label, Interpolation.elasticOut, 1000f, 0f, 1f));
+		tweens.add(new ScaleXTween(label, Interpolation.elasticOut, 1000f, 0f, 1f).setWait(Rand.rand(minWait, maxWait)));
+		tweens.add(new ScaleYTween(label, Interpolation.elasticOut, 1000f, 0f, 1f).setWait(Rand.rand(minWait, maxWait)));
 		
 		return label;
 	}

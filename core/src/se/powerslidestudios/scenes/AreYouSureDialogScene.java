@@ -61,6 +61,11 @@ public class AreYouSureDialogScene extends Scene{
 		return 300f;
 	}
 	
+	@Override
+	public float transitionInDuration() {
+		return 300f;
+	}
+	
 	private void close(){
 
 		MessageBox box = (MessageBox)elements.get(0);
@@ -68,18 +73,15 @@ public class AreYouSureDialogScene extends Scene{
 		TouchButton btnNo = (TouchButton)elements.get(2);
 		Label label = (Label)elements.get(3);
 		
-
-		tween(new PositionXYTween(
+		tween(new ScaleXYTween(
 				btnYes, 
 				Interpolation.pow2, transitionOutDuration(), 
-				btnYes.transform.position.x, btnYes.transform.position.y, 
-				-200, btnYes.transform.position.y));
+				1f, 0f));
 		
-		tween(new PositionXYTween(
+		tween(new ScaleXYTween(
 				btnNo, 
 				Interpolation.pow2, transitionOutDuration(), 
-				btnNo.transform.position.x, btnNo.transform.position.y, 
-				width + 200, btnNo.transform.position.y));
+				1f, 0f));
 		
 		tween(new PositionXYTween(
 				box, 
@@ -89,7 +91,7 @@ public class AreYouSureDialogScene extends Scene{
 		
 		tween(new ScaleXYTween(
 				label, 
-				Interpolation.pow2, transitionOutDuration(), 
+				Interpolation.linear, transitionOutDuration() * 0.5f, 
 				1f, 0f));
 		
 		manager.popScene();
@@ -103,12 +105,13 @@ public class AreYouSureDialogScene extends Scene{
 	
 	private void setupUI() {
 		
-		se.skoggy.ui.Label label = uiFactory.createLabel("Are you sure?");
+		se.skoggy.ui.Label label = uiFactory.createLabel("Are you sure?", transitionInDuration(), transitionInDuration() + 300f);
+		label.setScale(0.01f);
 		
-		MessageBox box = uiFactory.createMessageBox(new Vector2(width * 0.5f, height * 0.5f));
+		MessageBox box = uiFactory.createMessageBox(new Vector2(width * 0.5f, height * 0.5f), transitionInDuration());
 		
-		TouchButton btnYes = uiFactory.createRoundIconButton("arrow_left", "green");
-		TouchButton btnNo = uiFactory.createRoundIconButton("arrow_right", "red");
+		TouchButton btnYes = uiFactory.createRoundIconButton("ok", "green", 1000f);
+		TouchButton btnNo = uiFactory.createRoundIconButton("cross", "red", 1000f);
 
 		label.setPosition(width * 0.5f, height * 0.5f);
 		btnYes.setPosition(width * 0.3f, height * 0.72f);
@@ -139,6 +142,7 @@ public class AreYouSureDialogScene extends Scene{
 	@Override
 	public void update(float dt) {
 	
+		
 		for (UIElement element : elements) {
 			element.update(dt);
 		}
@@ -151,6 +155,17 @@ public class AreYouSureDialogScene extends Scene{
 	public void updateTransitionOut(float dt, float progress) {
 		super.update(dt);
 		super.updateTransitionOut(dt, progress);
+	}
+	
+	@Override
+	public void drawTransitionIn(float progress) {
+		super.drawTransitionIn(progress);
+		spriteBatch.setProjectionMatrix(uiCam.combined);
+		spriteBatch.begin();
+		for (UIElement element : elements) {
+			element.draw(uiFactory.getFont(), spriteBatch);		
+		}		
+		spriteBatch.end();
 	}
 
 	@Override

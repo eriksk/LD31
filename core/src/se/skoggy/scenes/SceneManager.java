@@ -103,9 +103,12 @@ public class SceneManager {
 	}
 
 	protected void removeActiveScene() {
-		activeScene.beforeRemoved();
-		scenes.remove(activeScene);
-		activeScene = null;
+		Scene sceneToRemove = activeScene;
+		scenes.remove(sceneToRemove);
+		setState(GOTO_NEXT_SCENE);
+		if(sceneToRemove.isPopup())
+			setState(ACTIVE);
+		sceneToRemove.beforeRemoved();
 	}
 
 	public void update(float dt) {
@@ -126,19 +129,27 @@ public class SceneManager {
 					}else{
 						activeScene.updateTransitionIn(dt, currentProgress / activeScene.transitionInDuration());
 					}
+					for (Scene scene : scenes) {
+						if(scene != activeScene){
+							scene.updatePassive(dt);
+						}
+					}
 
 				break;
 				case TRANSITION_OUT:
 					if(currentProgress / activeScene.transitionOutDuration() > 1f){
 						boolean isPopup  = activeScene.isPopup();
 						removeActiveScene();
-						setState(GOTO_NEXT_SCENE);
 						if(isPopup){
 							// popup is removed so just continue the next scene
-							setState(ACTIVE);
 						}
 					}else{
 						activeScene.updateTransitionOut(dt, currentProgress / activeScene.transitionOutDuration());
+					}
+					for (Scene scene : scenes) {
+						if(scene != activeScene){
+							scene.updatePassive(dt);
+						}
 					}
 
 				break;

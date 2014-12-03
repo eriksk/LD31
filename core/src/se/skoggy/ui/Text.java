@@ -105,6 +105,9 @@ public class Text extends Entity{
 		if(transform.scale.x != 0f && transform.scale.y != 0f)
 			font.setScale(transform.scale.x, transform.scale.y);
 		
+		if(transform.scale.x == 0f || transform.scale.y == 0f)
+			return;
+		
 		HAlignment hAlign = HAlignment.LEFT;
 		if(align == TextAlign.center){
 			hAlign = HAlignment.CENTER;
