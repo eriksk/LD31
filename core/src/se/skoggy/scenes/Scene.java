@@ -21,6 +21,8 @@ public abstract class Scene extends Stage{
 	protected TweenManager tweens;
 	protected int width;
 	protected int height;
+	protected SceneState state;
+	public float current = 0f;
 
 	public Scene(IGameContext context) {
 		super(new StretchViewport(context.virtualResolution().x, context.virtualResolution().y));
@@ -41,6 +43,22 @@ public abstract class Scene extends Stage{
 	public Rectangle getBoundaryArea(){
 		return null;
 	}
+	
+	public void setState(SceneState state) {
+		this.state = state;
+		current = 0f;
+		stateChanged(state);
+	}
+	
+	public SceneState getState() {
+		return state;
+	}
+	
+	public boolean isActive(){
+		return state == SceneState.Active;
+	}
+	
+	public void stateChanged(SceneState state){}
 	
 	public float transitionInDuration(){ return 0; };
 	public float transitionOutDuration(){ return 0; };
@@ -69,16 +87,7 @@ public abstract class Scene extends Stage{
 		tweens.update(dt);
 		cam.update();
 	}
-	public void updateTransitionIn(float dt, float progress){
-		cam.update();
-	}
-	public void updateTransitionOut(float dt, float progress){
-		cam.update();
-	}
 	public abstract void draw();
-	public void drawTransitionIn(float progress){};
-	public void drawTransitionOut(float progress){}
-
 	public void beforeRemoved() {	
 	}
 }

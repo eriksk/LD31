@@ -11,6 +11,7 @@ import se.skoggy.atlases.TextureAtlas;
 import se.skoggy.entity.Entity;
 import se.skoggy.game.IGameContext;
 import se.skoggy.scenes.Scene;
+import se.skoggy.scenes.SceneState;
 import se.skoggy.tweens.ITweenable;
 import se.skoggy.tweens.Tween;
 import se.skoggy.tweens.stock.AlphaTween;
@@ -27,12 +28,7 @@ import se.skoggy.ui.UIElement;
 import se.skoggy.ui.UiFactory;
 import se.skoggy.utils.Camera2D;
 
-public class MenuScene extends Scene{
-
-	Camera2D uiCam;
-	UiFactory uiFactory;
-	
-	List<UIElement> elements;
+public class MenuScene extends GuiScene{
 	
 	Text gameTitle;
 	BitmapFont titleFont;
@@ -44,11 +40,6 @@ public class MenuScene extends Scene{
 	@Override
 	public void load() {
 		super.load();
-		uiCam = new Camera2D(width, height, null);
-		uiCam.setPosition(width/2, height/2);
-		
-		uiFactory = new UiFactory(content(), tweens);
-		elements = new ArrayList<UIElement>();
 				
 		
 		titleFont = content().loadFont("universal_fruitcake_64");
@@ -58,7 +49,6 @@ public class MenuScene extends Scene{
 		tween(new ScaleYTween(gameTitle, Interpolation.elasticOut, 1000f, 1f, 2f));
 		tween(new PositionXYTween(gameTitle, Interpolation.pow2, 300f, width * 0.5f, height * -0.25f, width * 0.5f, height * 0.35f));
 		
-		createUi();
 	}
 	
 	@Override
@@ -66,8 +56,16 @@ public class MenuScene extends Scene{
 		return 500f;
 	}
 	
-	private void createUi() {
-
+	@Override
+	public void stateChanged(SceneState state) {
+		super.stateChanged(state);
+		if(state == SceneState.Done){
+			manager.pushScene(new GameScene(context));
+		}
+	}
+	
+	@Override
+	protected void createUi() {
 		final TouchButton btnPlay = uiFactory.createRoundIconButton("play", "yellow", 1000f);
 		final TouchButton btnRestart = uiFactory.createRoundIconButton("restart", "yellow", 1000f);
 		final TouchButton btnSettings = uiFactory.createRoundIconButton("settings", "yellow", 1000f);
@@ -83,7 +81,7 @@ public class MenuScene extends Scene{
 		btnSettings.addListener(new TouchButtonEventListener() {
 			@Override
 			public void clicked(TouchButton button) {
-				context.changeScene(new AreYouSureDialogScene(context, new DialogResultListener() {
+				manager.pushPopup(new AreYouSureDialogScene(context, new DialogResultListener() {
 					@Override
 					public void onClose(DialogResult result) {
 						if(result == DialogResult.Yes){
@@ -97,52 +95,20 @@ public class MenuScene extends Scene{
 		btnPlay.addListener(new TouchButtonEventListener() {
 			@Override
 			public void clicked(TouchButton button) {
-				manager.popScene();
+				setState(SceneState.TransitionOut);
 				tween(new ScaleXYTween(btnPlay, Interpolation.pow2, transitionOutDuration(), 1f, 0f));
 				tween(new ScaleXYTween(btnRestart, Interpolation.pow2, transitionOutDuration(), 1f, 0f));
 				tween(new ScaleXYTween(btnSettings, Interpolation.pow2, transitionOutDuration(), 1f, 0f));
 			}
 		});	
 	}
-	
-	@Override
-	public void beforeRemoved() {
-		super.beforeRemoved();
-		manager.pushScene(new GameScene(context));
-	}
 
 	@Override
 	public void update(float dt) {	
-		for (UIElement uiElement : elements) {
-			uiElement.update(dt);
-		}
-		
-		uiCam.update();
 		super.update(dt);
 	}
 	
-	@Override
-	public void updatePassive(float dt) {
-		for (UIElement uiElement : elements) {
-			uiElement.update(dt);
-		}
 		
-		uiCam.update();
-		super.updatePassive(dt);
-	}
-	
-	@Override
-	public void updateTransitionOut(float dt, float progress) {
-		super.updateTransitionOut(dt, progress);
-		update(dt);
-	}
-	
-	@Override
-	public void drawTransitionOut(float progress) {
-		super.drawTransitionOut(progress);
-		draw();
-	}
-	
 	@Override
 	public void draw() {	
 		spriteBatch.setProjectionMatrix(uiCam.combined);

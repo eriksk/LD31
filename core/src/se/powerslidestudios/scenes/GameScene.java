@@ -8,6 +8,7 @@ import se.skoggy.audio.IAudio;
 import se.skoggy.entity.Entity;
 import se.skoggy.game.IGameContext;
 import se.skoggy.scenes.Scene;
+import se.skoggy.scenes.SceneState;
 import se.skoggy.tweens.stock.AlphaTween;
 import se.skoggy.tweens.stock.BackAndForthInterpolation;
 import se.skoggy.tweens.stock.PositionXYTween;
@@ -32,7 +33,7 @@ public class GameScene extends GuiScene{
 		super.load();
 	
 		logo = new Entity(content().loadTexture("gfx/ludum_dare"));
-		tween(new AlphaTween(logo, Interpolation.linear, 2000f, 0f, 1f));
+		tween(new AlphaTween(logo, Interpolation.linear, 500f, 0f, 1f));
 		
 	}
 	
@@ -47,15 +48,22 @@ public class GameScene extends GuiScene{
 	}
 	
 	public void close() {
-		manager.popScene();
+		setState(SceneState.TransitionOut);
 	}
 	
 	@Override
-	public void beforeRemoved() {
-		super.beforeRemoved();
-		manager.pushScene(new MenuScene(context));
+	public void stateChanged(SceneState state) {
+		super.stateChanged(state);
+		
+		if(state == SceneState.TransitionOut){
+			tween(new AlphaTween(logo, Interpolation.linear, 500f, 1f, 0f));
+			tween(new ScaleXYTween((TouchButton)elements.get(0), Interpolation.pow2, 500f, 1f, 0f));
+		}
+		
+		if(state == SceneState.Done)
+			manager.pushScene(new MenuScene(context));
 	}
-	
+		
 	@Override
 	protected void createUi() {
 		TouchButton btnSettings = uiFactory.createRoundIconButton("cross", "yellow", transitionInDuration());
@@ -65,7 +73,7 @@ public class GameScene extends GuiScene{
 		btnSettings.addListener(new TouchButtonEventListener() {
 			@Override
 			public void clicked(TouchButton button) {
-				manager.pushScene(new AreYouSureDialogScene(context, new DialogResultListener() {
+				manager.pushPopup(new AreYouSureDialogScene(context, new DialogResultListener() {
 					@Override
 					public void onClose(DialogResult result) {
 						if(result == DialogResult.Yes){
@@ -94,12 +102,5 @@ public class GameScene extends GuiScene{
 		logo.draw(spriteBatch);
 		spriteBatch.end();
 		super.draw();
-		
-	}
-	
-	@Override
-	public void drawTransitionOut(float progress) {
-		super.drawTransitionOut(progress);
-		draw();
 	}
 }

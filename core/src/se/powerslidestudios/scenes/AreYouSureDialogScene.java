@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import se.skoggy.game.IGameContext;
 import se.skoggy.scenes.Scene;
+import se.skoggy.scenes.SceneState;
 import se.skoggy.tweens.stock.PositionXYTween;
 import se.skoggy.tweens.stock.ScaleXYTween;
 import se.skoggy.ui.Label;
@@ -63,7 +64,7 @@ public class AreYouSureDialogScene extends Scene{
 	
 	@Override
 	public float transitionInDuration() {
-		return 300f;
+		return 1000f;
 	}
 	
 	private void close(){
@@ -94,24 +95,27 @@ public class AreYouSureDialogScene extends Scene{
 				Interpolation.linear, transitionOutDuration() * 0.5f, 
 				1f, 0f));
 		
-		manager.popScene();
+		setState(SceneState.TransitionOut);
 	}
 	
 	@Override
-	public void beforeRemoved() {
-		resultCallback.onClose(result);
-	}
+	public void stateChanged(SceneState state) {
+		super.stateChanged(state);
 	
+		if(state == SceneState.Done){
+			resultCallback.onClose(result);
+		}
+	}
 	
 	private void setupUI() {
 		
-		se.skoggy.ui.Label label = uiFactory.createLabel("Are you sure?", transitionInDuration(), transitionInDuration() + 300f);
-		label.setScale(0.01f);
+		se.skoggy.ui.Label label = uiFactory.createLabel("Are you sure?", 200f, 200f);
+		label.setScale(0f);
 		
-		MessageBox box = uiFactory.createMessageBox(new Vector2(width * 0.5f, height * 0.5f), transitionInDuration());
+		MessageBox box = uiFactory.createMessageBox(new Vector2(width * 0.5f, height * 0.5f), 300f);
 		
-		TouchButton btnYes = uiFactory.createRoundIconButton("ok", "green", 1000f);
-		TouchButton btnNo = uiFactory.createRoundIconButton("cross", "red", 1000f);
+		TouchButton btnYes = uiFactory.createRoundIconButton("ok", "green", 600);
+		TouchButton btnNo = uiFactory.createRoundIconButton("cross", "red", 600);
 
 		label.setPosition(width * 0.5f, height * 0.5f);
 		btnYes.setPosition(width * 0.3f, height * 0.72f);
@@ -141,10 +145,12 @@ public class AreYouSureDialogScene extends Scene{
 
 	@Override
 	public void update(float dt) {
-	
-		
-		for (UIElement element : elements) {
-			element.update(dt);
+
+		if(isActive()){
+			
+			for (UIElement element : elements) {
+				element.update(dt);
+			}
 		}
 		
 		uiCam.update();
@@ -152,35 +158,7 @@ public class AreYouSureDialogScene extends Scene{
 	}
 	
 	@Override
-	public void updateTransitionOut(float dt, float progress) {
-		super.update(dt);
-		super.updateTransitionOut(dt, progress);
-	}
-	
-	@Override
-	public void drawTransitionIn(float progress) {
-		super.drawTransitionIn(progress);
-		spriteBatch.setProjectionMatrix(uiCam.combined);
-		spriteBatch.begin();
-		for (UIElement element : elements) {
-			element.draw(uiFactory.getFont(), spriteBatch);		
-		}		
-		spriteBatch.end();
-	}
-
-	@Override
 	public void draw() {
-		spriteBatch.setProjectionMatrix(uiCam.combined);
-		spriteBatch.begin();
-		for (UIElement element : elements) {
-			element.draw(uiFactory.getFont(), spriteBatch);		
-		}		
-		spriteBatch.end();
-	}
-	
-	@Override
-	public void drawTransitionOut(float progress) {	
-		super.drawTransitionOut(progress);
 		spriteBatch.setProjectionMatrix(uiCam.combined);
 		spriteBatch.begin();
 		for (UIElement element : elements) {

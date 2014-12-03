@@ -37,8 +37,10 @@ public abstract class GuiScene extends Scene{
 	@Override
 	public void update(float dt) {
 
-		for (UIElement uiElement : elements) {
-			uiElement.update(dt);
+		if(isActive()){
+			for (UIElement uiElement : elements) {
+				uiElement.update(dt);
+			}
 		}
 		
 		uiCam.update();

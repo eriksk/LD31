@@ -1,180 +1,98 @@
 package se.skoggy.scenes;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class SceneManager {
 
-	public static final int TRANSITION_IN = 0;
-	public static final int TRANSITION_OUT = 1;
-	public static final int ACTIVE = 2;
-	public static final int GOTO_NEXT_SCENE = 3;
-
-	protected List<Scene> scenes;
-	protected Scene activeScene;
-	protected int state;
-	protected float currentProgress;
+	protected Scene scene;
+	protected Scene popup;
 
 	public SceneManager() {
-		scenes = new ArrayList<Scene>();
-	}
-
-	public boolean hasActiveScene(){
-		return !scenes.isEmpty();
-	}
-
-	public boolean hasAnyScenes(){
-		return !scenes.isEmpty();
-	}
-
-	public int getState() {
-		return state;
-	}
-
-	public boolean isTransitioningOut(){
-		return state == TRANSITION_OUT;
-	}
-
-	public void pushScene(Scene scene, boolean isPreloaded){
-		activeScene = scene;
-		scenes.add(scene);
-		scene.setSceneManager(this);
-		if(!isPreloaded)
-			scene.load();
-		scene.update(16f);
-		setState(TRANSITION_IN);
 	}
 
 	public void pushScene(Scene scene){
-		pushScene(scene, false);
+		this.scene = scene;
+		this.scene.load();
+		this.scene.setSceneManager(this);
+		this.scene.update(16f);
+		startScene(this.scene);
 	}
-
+	public void pushScene(Scene scene, boolean preLoaded){
+		this.scene = scene;
+		this.scene.setSceneManager(this);
+		this.scene.update(16f);
+		startScene(this.scene);
+	}
+	
 	public void popScene(){
-		if(hasActiveScene()){
-			setState(TRANSITION_OUT);
-		}
+		scene.setState(SceneState.TransitionOut);
+		scene.current = 0f;
 	}
-
-	public void clearScenes(){
-		scenes.clear();
+	
+	public void pushPopup(Scene popup){
+		this.popup = popup;
+		this.popup.load();
+		this.popup.update(16f);
+		startScene(popup);
 	}
+	
+	private void startScene(Scene scene) {
+		scene.setState(SceneState.TransitionIn);
+		scene.current = 0f;
+	}
+	
+	public void update(float dt){
+		
+		if(scene == null)
+			return;
+		
+		scene.current += dt;
+	
+		if(popup == null){
+			scene.update(dt);
+		}else{
+			scene.updatePassive(dt);
+			
+			popup.current += dt;
+			popup.update(dt);
 
-	protected void setState(int state){
-		this.state = state;
-		switch (state) {
-			case ACTIVE:
-				// nothing
-			break;
-			case TRANSITION_IN:
-			break;
-			case TRANSITION_OUT:
-			break;
-			case GOTO_NEXT_SCENE:
-				if(hasAnyScenes()){
-					activeScene = scenes.get(scenes.size() - 1); // take last scene
-					setState(TRANSITION_IN);
+			if(popup.getState() == SceneState.TransitionIn){
+				float progress = popup.current / popup.transitionInDuration();
+				if(progress >= 1f){
+					popup.setState(SceneState.Active);
 				}
-				break;
+			}
+			
+			if(popup.getState() == SceneState.TransitionOut){
+				float progress = popup.current / popup.transitionOutDuration();
+				if(progress >= 1f){
+					popup.setState(SceneState.Done);
+					popup = null;
+				}
+			}
 		}
-		currentProgress = 0f;
-	}
-
-	protected void afterTransitionIn(){
-		setState(ACTIVE);
-	}
-	protected void afterTransitionOut(){
-		setState(TRANSITION_IN);
-	}
-
-	protected void setLastSceneToCurrentScene() {
-		if(!scenes.isEmpty()){
-			activeScene = scenes.get(scenes.size() - 1);
-			setState(TRANSITION_IN);
+		
+		if(scene.getState() == SceneState.TransitionIn){
+			float progress = scene.current / scene.transitionInDuration();
+			if(progress >= 1f){
+				scene.setState(SceneState.Active);
+			}
 		}
-	}
-
-	protected void removeLastScene(){
-		if(!scenes.isEmpty()){
-			scenes.remove(scenes.size() - 1);
-			activeScene = null;
-		}
-	}
-
-	protected void removeActiveScene() {
-		Scene sceneToRemove = activeScene;
-		scenes.remove(sceneToRemove);
-		setState(GOTO_NEXT_SCENE);
-		if(sceneToRemove.isPopup())
-			setState(ACTIVE);
-		sceneToRemove.beforeRemoved();
-	}
-
-	public void update(float dt) {
-		if(hasActiveScene()){
-			currentProgress += dt;
-			switch (state) {
-				case ACTIVE:
-					activeScene.update(dt);
-					for (Scene scene : scenes) {
-						if(scene != activeScene){
-							scene.updatePassive(dt);
-						}
-					}
-				break;
-				case TRANSITION_IN:
-					if(currentProgress / activeScene.transitionInDuration() > 1f){
-						setState(ACTIVE);
-					}else{
-						activeScene.updateTransitionIn(dt, currentProgress / activeScene.transitionInDuration());
-					}
-					for (Scene scene : scenes) {
-						if(scene != activeScene){
-							scene.updatePassive(dt);
-						}
-					}
-
-				break;
-				case TRANSITION_OUT:
-					if(currentProgress / activeScene.transitionOutDuration() > 1f){
-						boolean isPopup  = activeScene.isPopup();
-						removeActiveScene();
-						if(isPopup){
-							// popup is removed so just continue the next scene
-						}
-					}else{
-						activeScene.updateTransitionOut(dt, currentProgress / activeScene.transitionOutDuration());
-					}
-					for (Scene scene : scenes) {
-						if(scene != activeScene){
-							scene.updatePassive(dt);
-						}
-					}
-
-				break;
+		
+		if(scene.getState() == SceneState.TransitionOut){
+			float progress = scene.current / scene.transitionOutDuration();
+			if(progress >= 1f){
+				scene.setState(SceneState.Done);
 			}
 		}
 	}
-
+	
 	public void draw(){
-		if(hasActiveScene()){
-			if(activeScene.isPopup()){
-				// draw underlaying
-				// TODO: make safer
-				scenes.get(scenes.size() - 2).draw();
-			}
-			switch (state) {
-				case ACTIVE:
-					activeScene.draw();
-				break;
-				case TRANSITION_IN:
-					activeScene.drawTransitionIn(currentProgress / activeScene.transitionInDuration());
-				break;
-				case TRANSITION_OUT:
-					activeScene.drawTransitionOut(currentProgress / activeScene.transitionOutDuration());
-				break;
-			}
-		}
+		if(scene == null)
+			return;
+		
+		scene.draw();
+		
+		if(popup != null)
+			popup.draw();
 	}
 }
