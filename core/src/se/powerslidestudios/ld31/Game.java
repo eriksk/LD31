@@ -35,6 +35,7 @@ public class Game extends BaseGame implements IGameContext{
 	public void load() {		
 		new ServiceRegistrator().RegisterServices(this);
 		
+
 		content = new ContentManager("content", true);
 		
 		manager = new SceneManager();
