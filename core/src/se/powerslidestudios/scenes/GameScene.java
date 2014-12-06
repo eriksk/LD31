@@ -1,28 +1,31 @@
 package se.powerslidestudios.scenes;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
-
-import se.skoggy.audio.IAudio;
+import se.powerslidestudios.ld31.input.DirectionalInputTouchPanels;
+import se.powerslidestudios.ld31.input.TouchArea;
+import se.powerslidestudios.physics.ConvertUnits;
+import se.powerslidestudios.ships.PlayerShip;
+import se.skoggy.atlases.TextureAtlas;
 import se.skoggy.entity.Entity;
 import se.skoggy.game.IGameContext;
-import se.skoggy.scenes.Scene;
 import se.skoggy.scenes.SceneState;
-import se.skoggy.tweens.stock.AlphaTween;
-import se.skoggy.tweens.stock.BackAndForthInterpolation;
-import se.skoggy.tweens.stock.PositionXYTween;
-import se.skoggy.tweens.stock.RotationTween;
-import se.skoggy.tweens.stock.ScaleXYTween;
-import se.skoggy.ui.TouchButton;
-import se.skoggy.ui.TouchButtonEventListener;
-import se.skoggy.utils.ServiceLocator;
-import se.skoggy.utils.Timeline;
-import se.skoggy.utils.TimelineEvent;
+
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 
 public class GameScene extends GuiScene{
 
-	Entity logo;
+	Entity staticBackground;
+	
+	PlayerShip ship;
+	DirectionalInputTouchPanels directionalInput;
+	
+	World world;
+	Box2DDebugRenderer debugRenderer;
 	
 	public GameScene(IGameContext context) {
 		super(context);
@@ -32,11 +35,36 @@ public class GameScene extends GuiScene{
 	public void load() {
 		super.load();
 	
-		logo = new Entity(content().loadTexture("gfx/ludum_dare"));
-		tween(new AlphaTween(logo, Interpolation.linear, 500f, 0f, 1f));
+		directionalInput = new DirectionalInputTouchPanels(new Vector2(width / 2, height / 2));
+		staticBackground = new Entity(content().loadTexture("gfx/background"));
 		
+		TextureAtlas playerShipAtlas = new TextureAtlas(content());
+		playerShipAtlas.register("atlases/player_ship");
+		
+		ship = new PlayerShip(playerShipAtlas);
+		
+		debugRenderer = new Box2DDebugRenderer();
+		world = new World(new Vector2(0f, 0f), true);
+
+		
+		createShipBody();
 	}
 	
+	private void createShipBody() {
+		BodyDef bodyDefinition = new BodyDef();
+		bodyDefinition.type = BodyType.DynamicBody;
+		
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(ConvertUnits.toSim(ship.getSource().width), ConvertUnits.toSim(ship.getSource().height));
+				
+		Body body = world.createBody(bodyDefinition);
+		body.createFixture(shape, 1f);
+	
+		shape.dispose();
+	
+		ship.body = body;
+	}
+
 	@Override
 	public float transitionInDuration() {
 		return 500f;
@@ -55,10 +83,6 @@ public class GameScene extends GuiScene{
 	public void stateChanged(SceneState state) {
 		super.stateChanged(state);
 		
-		if(state == SceneState.TransitionOut){
-			tween(new AlphaTween(logo, Interpolation.linear, 500f, 1f, 0f));
-			tween(new ScaleXYTween((TouchButton)elements.get(0), Interpolation.pow2, 500f, 1f, 0f));
-		}
 		
 		if(state == SceneState.Done)
 			manager.pushScene(new MenuScene(context));
@@ -66,6 +90,7 @@ public class GameScene extends GuiScene{
 		
 	@Override
 	protected void createUi() {
+		/*
 		TouchButton btnSettings = uiFactory.createRoundIconButton("cross", "yellow", transitionInDuration());
 	
 		btnSettings.setPosition(width * 0.9f, height * 0.2f);
@@ -85,22 +110,66 @@ public class GameScene extends GuiScene{
 		});
 		
 		elements.add(btnSettings);
+		*/
 	}
 	
 	@Override
 	public void update(float dt) {
 	
-		logo.update(dt);
+		directionalInput.update();
+		
+		TouchArea area = directionalInput.getArea();
+		
+		if(area != TouchArea.none)
+			System.out.println(area.toString());
+		
+		float force = 1f;
+		
+		switch (area) {
+			case left:
+				ship.body.applyForceToCenter(new Vector2(force, 0f), true);
+				break;
+			case right:
+				ship.body.applyForceToCenter(new Vector2(-force, 0f), true);
+				break;
+			case top:
+				ship.body.applyForceToCenter(new Vector2(0f, force), true);
+				break;
+			case bottom:
+				ship.body.applyForceToCenter(new Vector2(0f, -force), true);
+				break;
+		}
+	
+		ship.update(dt);
+		
+	
+	
+		updatePhysics(dt);
+	
+		cam.move(ship.transform.position.x, ship.transform.position.y);
+		
+		staticBackground.update(dt);
 		super.update(dt);
 	}
 
+	private void updatePhysics(float dt) {
+		world.step(1/60f, 6, 2);	
+	}
+	
 	@Override
 	public void draw() {
 		
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
-		logo.draw(spriteBatch);
+		staticBackground.draw(spriteBatch);
+		ship.draw(spriteBatch);
 		spriteBatch.end();
+		
+		cam.setZoom(cam.zoom * 0.01f);
+		cam.update();
+		debugRenderer.render(world, cam.getParallax(0.01f));
+		cam.setZoom(cam.zoom * 100f);
+		
 		super.draw();
 	}
 }

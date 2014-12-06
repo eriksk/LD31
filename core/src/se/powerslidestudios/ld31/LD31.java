@@ -16,6 +16,12 @@ public class LD31 extends ApplicationAdapter {
 	}
 	
 	@Override
+	public void dispose() {
+		super.dispose();
+		game.dispose();
+	}
+	
+	@Override
 	public void create () {		
 		game = new Game(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		game.load();

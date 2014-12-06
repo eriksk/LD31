@@ -1,9 +1,6 @@
 package se.powerslidestudios.ld31;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
-
-import se.powerslidestudios.scenes.*;
+import se.powerslidestudios.scenes.GameScene;
 import se.skoggy.content.ContentManager;
 import se.skoggy.game.IGameContext;
 import se.skoggy.input.ITouchInput;
@@ -11,6 +8,9 @@ import se.skoggy.scenes.Scene;
 import se.skoggy.scenes.SceneManager;
 import se.skoggy.utils.BaseGame;
 import se.skoggy.utils.ServiceLocator;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 
 public class Game extends BaseGame implements IGameContext{
 
@@ -33,15 +33,21 @@ public class Game extends BaseGame implements IGameContext{
 	
 	@Override
 	public void load() {		
-		new ServiceRegistrator().RegisterServices(this);
-		
-
 		content = new ContentManager("content", true);
 		
+		new ServiceRegistrator().RegisterServices(this);
+		
+		
 		manager = new SceneManager();
-		//manager.pushScene(new GameScene(this));
+		manager.pushScene(new GameScene(this));
 		//manager.pushScene(new MenuScene(this));
-		manager.pushScene(new WaitScene(this, 1000f, new SplashScreen(this, "skoggy_logo", new SplashScreen(this, "ludum_dare_31", new MenuScene(this)))));
+		//manager.pushScene(new WaitScene(this, 1000f, new SplashScreen(this, "skoggy_logo", new SplashScreen(this, "ludum_dare_31", new MenuScene(this)))));
+	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		content.dispose();
 	}
 	
 	@Override

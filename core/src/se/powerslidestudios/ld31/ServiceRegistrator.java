@@ -11,9 +11,11 @@ public class ServiceRegistrator {
 
 	public void RegisterServices(IGameContext context){
 		
-		AudioManager audioManager = new AudioManager();
+		AudioManager audioManager = new AudioManager("audio");
 		
 		// TODO: register sounds
+		
+		audioManager.registerSound("ui_click.wav");
 		
 		audioManager.load(context.getContent());
 		

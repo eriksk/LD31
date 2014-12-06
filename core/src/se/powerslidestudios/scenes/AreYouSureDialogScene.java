@@ -3,9 +3,6 @@ package se.powerslidestudios.scenes;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.Vector2;
-
 import se.skoggy.game.IGameContext;
 import se.skoggy.scenes.Scene;
 import se.skoggy.scenes.SceneState;
@@ -13,13 +10,14 @@ import se.skoggy.tweens.stock.PositionXYTween;
 import se.skoggy.tweens.stock.ScaleXYTween;
 import se.skoggy.ui.Label;
 import se.skoggy.ui.MessageBox;
-import se.skoggy.ui.TextAlign;
 import se.skoggy.ui.TouchButton;
 import se.skoggy.ui.TouchButtonEventListener;
 import se.skoggy.ui.UIElement;
 import se.skoggy.ui.UiFactory;
 import se.skoggy.utils.Camera2D;
-import se.skoggy.utils.GLHelpers;
+
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Vector2;
 
 public class AreYouSureDialogScene extends Scene{
 
@@ -47,7 +45,7 @@ public class AreYouSureDialogScene extends Scene{
 	public void load() {
 		super.load();
 
-		uiCam = new Camera2D(width, height, null);
+		uiCam = new Camera2D(width, height);
 		uiCam.setPosition(width/2, height/2);
 		uiCam.update();
 		

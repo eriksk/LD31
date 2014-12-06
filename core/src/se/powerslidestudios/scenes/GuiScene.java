@@ -23,7 +23,7 @@ public abstract class GuiScene extends Scene{
 	public void load() {
 		super.load();
 
-		uiCam = new Camera2D(width, height, null);
+		uiCam = new Camera2D(width, height);
 		uiCam.setPosition(width/2, height/2);
 		
 		uiFactory = new UiFactory(content(), tweens);
