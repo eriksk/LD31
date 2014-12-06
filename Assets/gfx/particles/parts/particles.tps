@@ -189,6 +189,7 @@
         <key>fileList</key>
         <array>
             <filename>thruster.png</filename>
+            <filename>explosion.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

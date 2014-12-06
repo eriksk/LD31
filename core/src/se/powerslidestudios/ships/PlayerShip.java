@@ -19,12 +19,15 @@ public class PlayerShip extends Entity{
 	public Body body;
 	Joint cargoJoint;
 	
+	boolean alive;
+	
 	Thruster[] thrusters;
 
 	public PlayerShip(TextureAtlas atlas, World world) {
 		super(atlas.getTexture("body"));
 		this.atlas = atlas;
 		
+		alive = true;
 		createShipBody(world);
 		createThrusters();
 	}
@@ -40,7 +43,15 @@ public class PlayerShip extends Entity{
 	public boolean isConnectedToCargo(){
 		return cargoJoint != null;
 	}
-
+	
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+	
+	public boolean getAlive() {
+		return alive;
+	}
+	
 	private void createShipBody(World world) {
 		BodyDef bodyDefinition = new BodyDef();
 		bodyDefinition.type = BodyType.DynamicBody;
@@ -49,6 +60,7 @@ public class PlayerShip extends Entity{
 		shape.setAsBox(ConvertUnits.toSim(getSource().width), ConvertUnits.toSim(getSource().height));
 				
 		Body body = world.createBody(bodyDefinition);
+		body.setUserData(this);
 		body.createFixture(shape, 1f);
 	
 		shape.dispose();
@@ -104,6 +116,12 @@ public class PlayerShip extends Entity{
 		return thrusters[index].transform.rotation;
 	}
 
+	@Override
+	public void setPosition(float x, float y) {
+		super.setPosition(x, y);
+		body.setTransform(ConvertUnits.toSim(x), ConvertUnits.toSim(y),0);
+	}
+	
 	@Override
 	public void update(float dt) {
 		super.update(dt);

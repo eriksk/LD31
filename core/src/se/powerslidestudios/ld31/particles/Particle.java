@@ -5,4 +5,5 @@ public class Particle {
 	public float x, y, velX, velY;
 	public float rotation, scaleX, scaleY;
 	public float startScale, endScale;
+	public float rotationSpeed;
 }

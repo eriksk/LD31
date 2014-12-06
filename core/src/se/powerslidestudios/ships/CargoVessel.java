@@ -5,6 +5,7 @@ import se.skoggy.atlases.TextureAtlas;
 import se.skoggy.entity.Entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -48,12 +49,23 @@ public class CargoVessel extends Entity{
 		body.createFixture(loadingAreaBorderRight, 1f);
 		
 		body.setGravityScale(0f);
+		body.setUserData(this);
 		
 		body.setFixedRotation(true);
 		
 		shape.dispose();
 	
 		this.body = body;
+	}
+
+	public Body getBody() {
+		return body;
+	}
+
+	public Rectangle getDropZone() {
+		float width = (transform.position.x + 220) - (transform.position.x - 410);
+		float height = 120;
+		return new Rectangle(transform.position.x - 410, transform.position.y - 260, width, height);
 	}
 
 	public Vector2 getThrusterPosition(int index) {

@@ -1,8 +1,17 @@
 {"frames": [
 
 {
+	"filename": "explosion.png",
+	"frame": {"x":2,"y":2,"w":128,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
+	"sourceSize": {"w":128,"h":128},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
 	"filename": "thruster.png",
-	"frame": {"x":2,"y":2,"w":68,"h":28},
+	"frame": {"x":132,"y":2,"w":68,"h":28},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":68,"h":28},
@@ -14,8 +23,8 @@
 	"version": "1.0",
 	"image": "particles.png",
 	"format": "RGBA8888",
-	"size": {"w":128,"h":32},
+	"size": {"w":256,"h":256},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:019e3609f64da8f7bc71adc4c1638d55:127bda637e4fbe6b9e1899c0c98024ad:767f0aa26e08023d62afa20c0c952bea$"
+	"smartupdate": "$TexturePacker:SmartUpdate:474139d59900c049702a3f1e2e981bcd:86eb00d10f9a5f4cdebc0b5e8900f41a:767f0aa26e08023d62afa20c0c952bea$"
 }
 }

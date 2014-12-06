@@ -41,7 +41,7 @@ public class GameStateMachine {
 				currentState.leave(gameController);
 			currentState = targetState;
 			currentState.enter(gameController);
-			System.out.println("State: " + currentState.getClass().getSimpleName());
+			//System.out.println("State: " + currentState.getClass().getSimpleName());
 			targetState = null;
 		}
 		

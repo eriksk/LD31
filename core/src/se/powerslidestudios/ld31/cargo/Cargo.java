@@ -30,7 +30,8 @@ public class Cargo extends Entity{
 				
 		Body body = world.createBody(bodyDefinition);
 		body.createFixture(shape, 0.05f);
-	
+
+		body.setUserData(this);
 		shape.dispose();
 	
 		this.body = body;
@@ -38,6 +39,10 @@ public class Cargo extends Entity{
 	
 	public Body getBody() {
 		return body;
+	}
+
+	public Vector2 getPosition() {
+		return transform.position;
 	}
 	
 	@Override
