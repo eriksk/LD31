@@ -26,10 +26,10 @@ public class ExplosionManager {
 	}
 	
 	public void explode(float x, float y){
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < 32; i++) {
 			Particle p = particles.pop();
 			p.current = 0f;
-			p.duration = Rand.rand(200f, 800f);
+			p.duration = Rand.rand(400f, 2000f);
 			
 			p.startScale = 1f;
 			p.endScale = 4f;
@@ -37,8 +37,8 @@ public class ExplosionManager {
 			p.x = x;
 			p.y = y;
 			
-			float force = 0.1f + Rand.rand() * 0.2f;
-			p.rotationSpeed = Rand.rand(-1f, 1f) * 0.05f;
+			float force = 0.05f + Rand.rand() * 0.1f;
+			p.rotationSpeed = Rand.rand(-1f, 1f) * 0.01f;
 
 			p.velX = (float)Math.cos(p.rotation) * force;
 			p.velY = (float)Math.sin(p.rotation) * force;		

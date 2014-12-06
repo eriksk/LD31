@@ -1,0 +1,42 @@
+#ifdef GL_ES
+#define LOWP lowp
+precision mediump float;
+#else
+#define LOWP 
+#endif
+varying LOWP vec4 v_color;
+varying vec2 v_texCoords;
+uniform sampler2D u_texture;
+
+uniform float r;
+uniform float g;
+uniform float b;
+uniform float burn;
+uniform float saturation;
+uniform float brightness;
+	
+void main()
+{
+	
+	vec4 col = texture2D(u_texture, v_texCoords.xy);
+	vec2 dir = (0.5 - v_texCoords.xy);
+		
+	float d = sqrt(pow(dir.x * dir.x, 2.0) + pow(dir.y * dir.y, 2.0));
+	
+	col.r -= d * burn;
+	col.g -= d * burn;
+	col.b -= d * burn;
+	
+	float a = (col.r + col.g + col.b) / 3.0;
+	
+	a = a * (1.0 - saturation);
+	
+	col.r = (col.r * saturation + a) * r;
+	col.g = (col.g * saturation + a) * g;
+	col.b = (col.b * saturation + a) * b;
+	col.rgb += brightness;
+
+	col.a = 1.0;
+
+	gl_FragColor = v_color * col;
+}

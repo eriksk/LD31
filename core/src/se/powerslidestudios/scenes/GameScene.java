@@ -12,7 +12,9 @@ import se.powerslidestudios.ld31.input.DirectionalInputTouchPanels;
 import se.powerslidestudios.ld31.input.TouchArea;
 import se.powerslidestudios.ld31.particles.ExplosionManager;
 import se.powerslidestudios.ld31.particles.ParticleManager;
+import se.powerslidestudios.ld31.particles.backgrounds.Starfield;
 import se.powerslidestudios.ld31.particles.backgrounds.TiledGround;
+import se.powerslidestudios.ld31.shaders.ColorFilterShader;
 import se.powerslidestudios.ld31.ui.CargoButton;
 import se.powerslidestudios.physics.ConvertUnits;
 import se.powerslidestudios.physics.TypedContactListener;
@@ -21,6 +23,7 @@ import se.powerslidestudios.ships.CargoVessel;
 import se.powerslidestudios.ships.PlayerShip;
 import se.skoggy.atlases.TextureAtlas;
 import se.skoggy.audio.IAudio;
+import se.skoggy.entity.Entity;
 import se.skoggy.game.IGameContext;
 import se.skoggy.scenes.SceneState;
 import se.skoggy.ui.Text;
@@ -42,6 +45,7 @@ import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
 public class GameScene extends GuiScene {
 
 	TiledGround ground;
+	Starfield starfield;
 
 	PlayerShip player;
 	CargoVessel cargoVessel;
@@ -72,6 +76,8 @@ public class GameScene extends GuiScene {
 	Text scoreText;
 
 	TimerTrig gameStartTrig = new TimerTrig(2000f);
+	
+	ColorFilterShader colorFilter;
 
 	public GameScene(IGameContext context) {
 		super(context);
@@ -162,6 +168,17 @@ public class GameScene extends GuiScene {
 				player.setAlive(false);
 			}
 		});
+		contactListeners.add(new TypedContactListener<PlayerShip, Entity>(PlayerShip.class, Entity.class) {
+			@Override
+			protected void onCollision(PlayerShip player, Entity genericEntity) {
+				player.setAlive(false);
+			}
+		});
+		
+		starfield = new Starfield();
+		starfield.load(content());
+		
+		colorFilter = new ColorFilterShader(width, height, content());
 
 		reset();
 	}
@@ -300,6 +317,13 @@ public class GameScene extends GuiScene {
 		particleManager.update(dt);
 		explosionManager.update(dt);
 		updateControllerSettings(dt);
+		starfield.update(dt);
+
+		colorFilter.getParameters().saturation = 0.6f;
+		colorFilter.getParameters().r = 0.75f;
+		colorFilter.getParameters().g = 0.8f;
+		colorFilter.getParameters().b= 1f;
+		colorFilter.update(dt);
 
 		cam.setZoom(1.5f);
 		if(gameStartTrig.progress() >= 1f)
@@ -373,10 +397,8 @@ public class GameScene extends GuiScene {
 	}
 
 	private void killPlayer() {
-		explosionManager.explode(player.transform.position.x,
-				player.transform.position.y);
-
-		// wait...
+		explosionManager.explode(player.transform.position.x, player.transform.position.y);
+		ServiceLocator.context.locate(IAudio.class).play("explosion");
 		reset();
 	}
 
@@ -421,8 +443,13 @@ public class GameScene extends GuiScene {
 
 	@Override
 	public void draw() {
+		colorFilter.begin();
+		
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		
+		starfield.draw(spriteBatch, cam);
 
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
@@ -452,6 +479,10 @@ public class GameScene extends GuiScene {
 		 */
 
 		spriteBatch.end();
+		
+		colorFilter.end();
+		
+		colorFilter.render();
 
 		spriteBatch.setProjectionMatrix(uiCam.combined);
 		spriteBatch.begin();

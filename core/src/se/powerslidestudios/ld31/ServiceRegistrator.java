@@ -16,6 +16,8 @@ public class ServiceRegistrator {
 		// TODO: register sounds
 
 		audioManager.registerSound("ui_click.wav");
+		audioManager.registerSound("explosion.wav");
+		
 		audioManager.registerSong("thrust.wav");
 		
 		audioManager.load(context.getContent());

@@ -1,6 +1,7 @@
 package se.powerslidestudios.ld31.particles.backgrounds;
 
 import se.powerslidestudios.physics.ConvertUnits;
+import se.skoggy.entity.Entity;
 import se.skoggy.utils.Camera2D;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -44,6 +45,9 @@ public class TiledGround {
 		
 		Body body = world.createBody(bodyDefinition);
 		body.createFixture(shape, 1f);
+		
+		// just use a generic type
+		body.setUserData(new Entity());
 		
 		shape.dispose();
 	
