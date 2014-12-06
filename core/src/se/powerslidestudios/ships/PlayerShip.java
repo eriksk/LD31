@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -16,6 +17,7 @@ public class PlayerShip extends Entity{
 	
 	private TextureAtlas atlas;
 	public Body body;
+	Joint cargoJoint;
 	
 	Thruster[] thrusters;
 
@@ -25,6 +27,18 @@ public class PlayerShip extends Entity{
 		
 		createShipBody(world);
 		createThrusters();
+	}
+
+	public void setCargoJoint(Joint joint) {
+		cargoJoint = joint;
+	}
+	
+	public Joint getCargoJoint() {
+		return cargoJoint;
+	}
+	
+	public boolean isConnectedToCargo(){
+		return cargoJoint != null;
 	}
 
 	private void createShipBody(World world) {
@@ -40,8 +54,13 @@ public class PlayerShip extends Entity{
 		shape.dispose();
 		
 		body.setFixedRotation(true);
+		body.setGravityScale(0f);
 	
 		this.body = body;
+	}
+	
+	public Body getBody() {
+		return body;
 	}
 	
 	private void createThrusters() {

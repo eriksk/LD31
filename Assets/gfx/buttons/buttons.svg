@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg5484"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="buttons.svg">
+  <defs
+     id="defs5486" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="199.39341"
+     inkscape:cy="444.39461"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5489">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#009100;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       id="rect6024"
+       width="482.85291"
+       height="243.95184"
+       x="-133.84521"
+       y="513.4458"
+       ry="0.44079059" />
+    <g
+       id="g6044"
+       transform="translate(-168.19039,-0.50507572)"
+       inkscape:export-filename="E:\Projects\java\LD31\Assets\gfx\buttons\parts\button_pickup.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         id="g6034">
+        <path
+           transform="matrix(0.53932813,0,0,0.53932814,97.524697,354.05548)"
+           d="m 247.14286,524.50507 c 0,55.62296 -45.09132,100.71428 -100.71429,100.71428 -55.622961,0 -100.714283,-45.09132 -100.714283,-100.71428 0,-55.62297 45.091322,-100.71429 100.714283,-100.71429 55.62297,0 100.71429,45.09132 100.71429,100.71429 z"
+           sodipodi:ry="100.71429"
+           sodipodi:rx="100.71429"
+           sodipodi:cy="524.50507"
+           sodipodi:cx="146.42857"
+           id="path6017"
+           style="fill:#ffffff;fill-opacity:0.3068783;fill-rule:evenodd;stroke:none"
+           sodipodi:type="arc" />
+        <path
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+           d="m 176.48422,572.9375 c -35.35259,0 -63.98422,28.63163 -63.98422,63.98422 0,35.35259 28.63163,64.01578 63.98422,64.01578 35.35259,0 64.01578,-28.66319 64.01578,-64.01578 0,-35.35259 -28.66319,-63.98422 -64.01578,-63.98422 z m 0,9.69075 c 29.99903,0 54.32503,24.29443 54.32503,54.29347 0,29.99903 -24.326,54.32503 -54.32503,54.32503 -29.99904,0 -54.29347,-24.326 -54.29347,-54.32503 0,-29.99904 24.29443,-54.29347 54.29347,-54.29347 z"
+           id="path6019"
+           inkscape:connector-curvature="0" />
+      </g>
+      <g
+         transform="matrix(0.81468264,0,0,0.81468264,33.203137,119.90849)"
+         id="g6026"
+         style="fill:#ffffff;fill-opacity:1">
+        <rect
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+           id="rect6002"
+           width="43.214287"
+           height="43.214287"
+           x="154.28572"
+           y="645.93359"
+           ry="3.5714285" />
+        <g
+           id="g6009"
+           transform="matrix(0.64138069,0,0,0.64138069,62.954499,210.74548)"
+           style="fill:#ffffff;fill-opacity:1">
+          <rect
+             ry="0"
+             y="591.29077"
+             x="170.35715"
+             height="50.357143"
+             width="10.357142"
+             id="rect6004"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none" />
+          <path
+             sodipodi:nodetypes="ccccc"
+             inkscape:connector-curvature="0"
+             id="rect6006"
+             d="m 150.16184,623.44197 25.38503,-12.22685 25.38504,12.22685 -25.38504,-47.52233 z"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none" />
+        </g>
+        <rect
+           ry="0.44079059"
+           y="635.83209"
+           x="171.96338"
+           height="5.3335667"
+           width="7.8589482"
+           id="rect6013"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none" />
+        <rect
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+           id="rect6015"
+           width="7.8589482"
+           height="5.3335667"
+           x="171.96338"
+           y="625.22546"
+           ry="0.44079059" />
+      </g>
+    </g>
+    <g
+       transform="translate(-6.0609211,-1.515229)"
+       id="g6056"
+       inkscape:export-filename="E:\Projects\java\LD31\Assets\gfx\buttons\parts\button_drop.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         id="g6058">
+        <path
+           sodipodi:type="arc"
+           style="fill:#ffffff;fill-opacity:0.3068783;fill-rule:evenodd;stroke:none"
+           id="path6060"
+           sodipodi:cx="146.42857"
+           sodipodi:cy="524.50507"
+           sodipodi:rx="100.71429"
+           sodipodi:ry="100.71429"
+           d="m 247.14286,524.50507 c 0,55.62296 -45.09132,100.71428 -100.71429,100.71428 -55.622961,0 -100.714283,-45.09132 -100.714283,-100.71428 0,-55.62297 45.091322,-100.71429 100.714283,-100.71429 55.62297,0 100.71429,45.09132 100.71429,100.71429 z"
+           transform="matrix(0.53932813,0,0,0.53932814,97.524697,354.05548)" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path6062"
+           d="m 176.48422,572.9375 c -35.35259,0 -63.98422,28.63163 -63.98422,63.98422 0,35.35259 28.63163,64.01578 63.98422,64.01578 35.35259,0 64.01578,-28.66319 64.01578,-64.01578 0,-35.35259 -28.66319,-63.98422 -64.01578,-63.98422 z m 0,9.69075 c 29.99903,0 54.32503,24.29443 54.32503,54.29347 0,29.99903 -24.326,54.32503 -54.32503,54.32503 -29.99904,0 -54.29347,-24.326 -54.29347,-54.32503 0,-29.99904 24.29443,-54.29347 54.29347,-54.29347 z"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none" />
+      </g>
+      <g
+         id="g6064"
+         transform="matrix(-0.81468264,0,0,-0.81468264,319.79686,1153.9665)"
+         style="fill:#ffffff;fill-opacity:1">
+        <rect
+           ry="3.5714285"
+           y="645.93359"
+           x="154.28572"
+           height="43.214287"
+           width="43.214287"
+           id="rect6066"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none" />
+        <g
+           transform="matrix(0.64138069,0,0,0.64138069,62.954499,210.74548)"
+           id="g6068"
+           style="fill:#ffffff;fill-opacity:1">
+          <rect
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+             id="rect6070"
+             width="10.357142"
+             height="50.357143"
+             x="170.35715"
+             y="591.29077"
+             ry="0" />
+          <path
+             style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+             d="m 150.16184,623.44197 25.38503,-12.22685 25.38504,12.22685 -25.38504,-47.52233 z"
+             id="path6072"
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccc" />
+        </g>
+        <rect
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none"
+           id="rect6074"
+           width="7.8589482"
+           height="5.3335667"
+           x="171.96338"
+           y="635.83209"
+           ry="0.44079059" />
+        <rect
+           ry="0.44079059"
+           y="625.22546"
+           x="171.96338"
+           height="5.3335667"
+           width="7.8589482"
+           id="rect6076"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none" />
+      </g>
+    </g>
+  </g>
+</svg>

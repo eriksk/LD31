@@ -31,7 +31,7 @@ public class CargoVessel extends Entity{
 	
 	private void createPhysicsBody(World world) {
 		BodyDef bodyDefinition = new BodyDef();
-		bodyDefinition.type = BodyType.DynamicBody;
+		bodyDefinition.type = BodyType.StaticBody;
 		
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(ConvertUnits.toSim(getSource().width * 0.8f), ConvertUnits.toSim(getSource().height * 0.6f), new Vector2(ConvertUnits.toSim(240), ConvertUnits.toSim(-32)), 0f);
@@ -46,6 +46,8 @@ public class CargoVessel extends Entity{
 		body.createFixture(shape, 1f);
 		body.createFixture(loadingAreaBorderLeft, 1f);
 		body.createFixture(loadingAreaBorderRight, 1f);
+		
+		body.setGravityScale(0f);
 		
 		body.setFixedRotation(true);
 		

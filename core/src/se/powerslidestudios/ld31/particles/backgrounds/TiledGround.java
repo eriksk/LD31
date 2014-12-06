@@ -28,6 +28,7 @@ public class TiledGround {
 	}
 	
 	public void draw(SpriteBatch spriteBatch, Camera2D cam){
+		spriteBatch.setColor(1f, 1f, 1f, 1f);
 		spriteBatch.draw(texture, x, y, texture.getWidth() * tiles, texture.getHeight(), 0, 0, texture.getWidth() * tiles * 4, texture.getHeight(), false, true);
 	}
 }
