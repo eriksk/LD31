@@ -1,0 +1,30 @@
+{"frames": [
+
+{
+	"filename": "cargo_vessel_body.png",
+	"frame": {"x":2,"y":2,"w":1619,"h":456},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1619,"h":456},
+	"sourceSize": {"w":1619,"h":456},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "loading_area.png",
+	"frame": {"x":2,"y":460,"w":670,"h":133},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":670,"h":133},
+	"sourceSize": {"w":670,"h":133},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "cargo_vessel.png",
+	"format": "RGBA8888",
+	"size": {"w":2048,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:90377f2f50a3c3d2a64e1eb9a5635cda:3c42c3d56db14a334b1a9f92459ee19a:33e741af088e8476101449c00de6b4d9$"
+}
+}
