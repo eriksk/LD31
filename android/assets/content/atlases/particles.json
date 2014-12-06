@@ -1,0 +1,21 @@
+{"frames": [
+
+{
+	"filename": "thruster.png",
+	"frame": {"x":2,"y":2,"w":68,"h":28},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":68,"h":28},
+	"sourceSize": {"w":68,"h":28},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "particles.png",
+	"format": "RGBA8888",
+	"size": {"w":128,"h":32},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:019e3609f64da8f7bc71adc4c1638d55:127bda637e4fbe6b9e1899c0c98024ad:767f0aa26e08023d62afa20c0c952bea$"
+}
+}
