@@ -125,4 +125,18 @@ public class PlayerShip extends Entity{
 		}		
 		super.draw(spriteBatch);
 	}
+
+	public Vector2 getJointPositionOffset() {
+		return new Vector2(0f, getSource().height * 1.2f);
+	}
+
+	public Vector2 getRopeJointPosition() {
+		Vector2 offset = getJointPositionOffset();
+		offset.x *= 0.5f;
+		offset.y *= 0.5f;
+		
+		offset.rotate((float)Math.toDegrees(transform.rotation));
+		
+		return new Vector2(transform.position.x + offset.x, transform.position.y + offset.y);
+	}
 }

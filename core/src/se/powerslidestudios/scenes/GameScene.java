@@ -3,6 +3,7 @@ package se.powerslidestudios.scenes;
 import se.powerslidestudios.buildings.LoadingArea;
 import se.powerslidestudios.ld31.GameController;
 import se.powerslidestudios.ld31.cargo.Cargo;
+import se.powerslidestudios.ld31.cargo.CargoRope;
 import se.powerslidestudios.ld31.gamestates.GameStateMachine;
 import se.powerslidestudios.ld31.gamestates.implementations.AbleToPickupCargoState;
 import se.powerslidestudios.ld31.gamestates.implementations.CarryingCargoState;
@@ -48,6 +49,8 @@ public class GameScene extends GuiScene{
 	GameStateMachine state;
 	GameController gameController;
 	
+	CargoRope rope;
+	
 	World world;
 	Box2DDebugRenderer debugRenderer;
 	
@@ -85,14 +88,19 @@ public class GameScene extends GuiScene{
 		TextureAtlas cargoAtlas = new TextureAtlas(content());
 		cargoAtlas.register("atlases/cargo");
 		
-		ground = new TiledGround(content().loadTexture("gfx/ground").getTexture(), -1000, 200, 24);
+		ground = new TiledGround(content().loadTexture("gfx/ground").getTexture(), -1000, 200, 24, world);
 		
 		loadingArea = new LoadingArea(buildingAtlas);
-		loadingArea.setPosition(0, 190);
+		loadingArea.setPosition(0, 156);
 		
 		cargo = new Cargo(cargoAtlas, world);
 		cargo.setPosition(loadingArea.transform.position.x, loadingArea.transform.position.y);
 		cargo.getBody().setActive(false);
+		
+		TextureAtlas ropeAtlas = new TextureAtlas(content());
+		ropeAtlas.register("atlases/ropes");
+		
+		rope = new CargoRope(ropeAtlas);
 		
 		particleManager = new ParticleManager();
 		particleManager.load(content());
@@ -141,10 +149,10 @@ public class GameScene extends GuiScene{
 		
 		
 		rope.localAnchorA.x = ConvertUnits.toSim(0);
-		rope.localAnchorA.y = ConvertUnits.toSim(ship.getSource().height * 1.2f);
+		rope.localAnchorA.y = ConvertUnits.toSim(ship.getJointPositionOffset().y);
 		
 		rope.localAnchorB.x = 0f;
-		rope.localAnchorB.y = ConvertUnits.toSim(-cargo.getSource().height);
+		rope.localAnchorB.y = ConvertUnits.toSim(cargo.getJointPositionOffset().y);
 		
 		rope.maxLength = ConvertUnits.toSim(256f);
 		
@@ -270,11 +278,11 @@ public class GameScene extends GuiScene{
 		
 
 		if(gameController.showPickupCargoButton){
-			buttonPickup.setPosition(width / 2f, height * 0.2f);
+			buttonPickup.setPosition(width * 0.1f, height * 0.15f);
 			buttonPickup.update(dt);
 		}
 		if(gameController.showDropCargoButton){
-			buttonDrop.setPosition(width / 2f, height * 0.2f);
+			buttonDrop.setPosition(width * 0.1f, height * 0.15f);
 			buttonDrop.update(dt);
 		}
 	
@@ -320,6 +328,9 @@ public class GameScene extends GuiScene{
 		loadingArea.draw(spriteBatch);
 		player.draw(spriteBatch);
 		cargo.draw(spriteBatch);
+		if(gameController.isCarryingCargo()){
+			rope.draw(spriteBatch, player.getRopeJointPosition(), cargo.getRopeJointPosition());
+		}
 		cargoVessel.draw(spriteBatch);
 		particleManager.draw(spriteBatch);
 		spriteBatch.end();
@@ -332,10 +343,14 @@ public class GameScene extends GuiScene{
 			buttonDrop.draw(spriteBatch);
 		spriteBatch.end();
 		
+		/*
+		 
 		cam.setZoom(cam.zoom * 0.01f);
 		cam.update();
 		debugRenderer.render(world, cam.getParallax(0.01f));
 		cam.setZoom(cam.zoom * 100f);
+		
+		*/
 		
 		super.draw();
 	}

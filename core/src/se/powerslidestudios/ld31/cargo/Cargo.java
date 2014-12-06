@@ -4,6 +4,7 @@ import se.powerslidestudios.physics.ConvertUnits;
 import se.skoggy.atlases.TextureAtlas;
 import se.skoggy.entity.Entity;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -53,5 +54,19 @@ public class Cargo extends Entity{
 		transform.rotation = body.getAngle();
 		
 		super.update(dt);
+	}
+
+	public Vector2 getJointPositionOffset() {
+		return new Vector2(0f, -getSource().height);
+	}
+
+	public Vector2 getRopeJointPosition() {
+		Vector2 offset = getJointPositionOffset();
+		offset.x *= 0.5f;
+		offset.y *= 0.5f;
+
+		offset.rotate((float)Math.toDegrees(transform.rotation));
+		
+		return new Vector2(transform.position.x + offset.x, transform.position.y + offset.y);
 	}
 }
