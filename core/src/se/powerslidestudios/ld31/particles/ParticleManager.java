@@ -30,8 +30,8 @@ public class ParticleManager {
 		p.current = 0f;
 		p.duration = Rand.rand(100f, 300f);
 		
-		p.scaleX = 0.5f;
-		p.scaleY = 0.5f;
+		p.startScale = 0.5f;
+		p.endScale = 1f;
 		p.rotation = rotation;
 		p.x = x;
 		p.y = y;
@@ -39,8 +39,24 @@ public class ParticleManager {
 		float force = 0.1f;
 
 		p.velX = (float)Math.cos(rotation) * force;
-		p.velY = (float)Math.sin(rotation) * force;
+		p.velY = (float)Math.sin(rotation) * force;		
+	}
+	
+	public void spawnThrusterLarge(float x, float y, float rotation) {
+		Particle p = particles.pop();
+		p.current = 0f;
+		p.duration = Rand.rand(100f, 300f);
 		
+		p.startScale = 3f;
+		p.endScale = 6f;
+		p.rotation = rotation;
+		p.x = x;
+		p.y = y;
+		
+		float force = 0.3f;
+
+		p.velX = (float)Math.cos(rotation) * force;
+		p.velY = (float)Math.sin(rotation) * force;		
 	}
 	
 	public void update(float dt){
@@ -53,8 +69,8 @@ public class ParticleManager {
 				p.x += p.velX * dt;
 				p.y += p.velY * dt;
 
-				p.scaleX = 0.5f + (p.current / p.duration) * 0.5f;
-				p.scaleY = 0.5f + (p.current / p.duration) * 0.5f;
+				p.scaleX = p.startScale + (p.endScale - p.startScale) * (p.current / p.duration);
+				p.scaleY = p.startScale + (p.endScale - p.startScale) * (p.current / p.duration);
 			}
 		}
 	}

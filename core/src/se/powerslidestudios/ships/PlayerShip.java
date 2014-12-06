@@ -7,6 +7,10 @@ import se.skoggy.entity.Entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 
 public class PlayerShip extends Entity{
 	
@@ -15,11 +19,29 @@ public class PlayerShip extends Entity{
 	
 	Thruster[] thrusters;
 
-	public PlayerShip(TextureAtlas atlas) {
+	public PlayerShip(TextureAtlas atlas, World world) {
 		super(atlas.getTexture("body"));
 		this.atlas = atlas;
 		
+		createShipBody(world);
 		createThrusters();
+	}
+
+	private void createShipBody(World world) {
+		BodyDef bodyDefinition = new BodyDef();
+		bodyDefinition.type = BodyType.DynamicBody;
+		
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(ConvertUnits.toSim(getSource().width), ConvertUnits.toSim(getSource().height));
+				
+		Body body = world.createBody(bodyDefinition);
+		body.createFixture(shape, 1f);
+	
+		shape.dispose();
+		
+		body.setFixedRotation(true);
+	
+		this.body = body;
 	}
 	
 	private void createThrusters() {

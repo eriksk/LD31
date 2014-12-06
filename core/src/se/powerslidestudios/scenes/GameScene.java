@@ -5,30 +5,27 @@ import se.powerslidestudios.ld31.input.DirectionalInputTouchPanels;
 import se.powerslidestudios.ld31.input.TouchArea;
 import se.powerslidestudios.ld31.particles.ParticleManager;
 import se.powerslidestudios.ld31.particles.backgrounds.TiledGround;
-import se.powerslidestudios.physics.ConvertUnits;
+import se.powerslidestudios.ships.CargoVessel;
 import se.powerslidestudios.ships.PlayerShip;
 import se.skoggy.atlases.TextureAtlas;
 import se.skoggy.audio.IAudio;
-import se.skoggy.entity.Entity;
 import se.skoggy.game.IGameContext;
 import se.skoggy.scenes.SceneState;
 import se.skoggy.utils.ServiceLocator;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class GameScene extends GuiScene{
 
-	Entity staticBackground;
 	TiledGround ground;
 	
 	PlayerShip ship;
 	DirectionalInputTouchPanels directionalInput;
+	CargoVessel cargoVessel;
 	
 	ParticleManager particleManager;
 	
@@ -44,17 +41,25 @@ public class GameScene extends GuiScene{
 	@Override
 	public void load() {
 		super.load();
-	
+
+		debugRenderer = new Box2DDebugRenderer();
+		world = new World(new Vector2(0f, 0f), true);
+		
 		directionalInput = new DirectionalInputTouchPanels(new Vector2(width / 2, height / 2));
-		staticBackground = new Entity(content().loadTexture("gfx/background"));
 		
 		TextureAtlas playerShipAtlas = new TextureAtlas(content());
 		playerShipAtlas.register("atlases/player_ship");
 		
-		ship = new PlayerShip(playerShipAtlas);
+		ship = new PlayerShip(playerShipAtlas, world);
 
 		TextureAtlas buildingAtlas = new TextureAtlas(content());
 		buildingAtlas.register("atlases/buildings");
+		
+		TextureAtlas cargoVesselAtlas = new TextureAtlas(content());
+		cargoVesselAtlas.register("atlases/cargo_vessel");
+		
+		cargoVessel = new CargoVessel(cargoVesselAtlas, world);
+		cargoVessel.setPosition(300, -1000);
 		
 		
 		ground = new TiledGround(content().loadTexture("gfx/ground").getTexture(), -1000, 200, 24);
@@ -66,28 +71,9 @@ public class GameScene extends GuiScene{
 		particleManager = new ParticleManager();
 		particleManager.load(content());
 		
-		debugRenderer = new Box2DDebugRenderer();
-		world = new World(new Vector2(0f, 0f), true);
 
-
-		
-		createShipBody();
 	}
 	
-	private void createShipBody() {
-		BodyDef bodyDefinition = new BodyDef();
-		bodyDefinition.type = BodyType.DynamicBody;
-		
-		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(ConvertUnits.toSim(ship.getSource().width), ConvertUnits.toSim(ship.getSource().height));
-				
-		Body body = world.createBody(bodyDefinition);
-		body.createFixture(shape, 1f);
-	
-		shape.dispose();
-	
-		ship.body = body;
-	}
 
 	@Override
 	public float transitionInDuration() {
@@ -179,17 +165,26 @@ public class GameScene extends GuiScene{
 		}else{
 			audio.pauseSong("thrust");
 		}
-	
+
+		Vector2 cargoThruster1 = cargoVessel.getThrusterPosition(0);
+		Vector2 cargoThruster2 = cargoVessel.getThrusterPosition(1);
+
+		largeThrust(cargoThruster1);
+		largeThrust(cargoThruster2);
+		
 		updatePhysics(dt);
 	
 		ship.update(dt);
+		cargoVessel.update(dt);
 		loadingArea.update(dt);
 		particleManager.update(dt);
 		
 	
-		cam.move(ship.transform.position.x, ship.transform.position.y);
+		cam.setZoom(1.2f);
 		
-		staticBackground.update(dt);
+		//cam.move(ship.transform.position.x, ship.transform.position.y);
+		cam.move(cargoVessel.transform.position.x, cargoVessel.transform.position.y);
+		
 		ground.update(dt);
 		super.update(dt);
 	}
@@ -206,25 +201,33 @@ public class GameScene extends GuiScene{
 		
 	}
 
+	private void largeThrust(Vector2 position) {		
+		float distance = 96f;
+		particleManager.spawnThrusterLarge(position.x + (float)Math.cos(0f) * distance, position.y + (float)Math.sin(0f) * distance, 0f);
+		
+	}
+
 	private void updatePhysics(float dt) {
 		world.step(1/60f, 6, 2);	
 	}
 	
 	@Override
 	public void draw() {
+		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
-		staticBackground.draw(spriteBatch);
 		ground.draw(spriteBatch, cam);
 		loadingArea.draw(spriteBatch);
-		particleManager.draw(spriteBatch);
 		ship.draw(spriteBatch);
+		cargoVessel.draw(spriteBatch);
+		particleManager.draw(spriteBatch);
 		spriteBatch.end();
 		
 		cam.setZoom(cam.zoom * 0.01f);
 		cam.update();
-		//debugRenderer.render(world, cam.getParallax(0.01f));
+		debugRenderer.render(world, cam.getParallax(0.01f));
 		cam.setZoom(cam.zoom * 100f);
 		
 		super.draw();
