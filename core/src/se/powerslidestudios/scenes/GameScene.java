@@ -2,6 +2,7 @@ package se.powerslidestudios.scenes;
 
 import se.powerslidestudios.buildings.LoadingArea;
 import se.powerslidestudios.ld31.GameController;
+import se.powerslidestudios.ld31.WaveManager;
 import se.powerslidestudios.ld31.cargo.Cargo;
 import se.powerslidestudios.ld31.cargo.CargoRope;
 import se.powerslidestudios.ld31.gamestates.GameStateMachine;
@@ -68,18 +69,18 @@ public class GameScene extends GuiScene {
 
 	TypedContactListenerCollection contactListeners;
 
+	WaveManager waves;
+
 	World world;
 	Box2DDebugRenderer debugRenderer;
 
 	LoadingArea loadingArea;
 
-	int score;
-
 	BitmapFont font;
-	Text scoreText;
+	Text scoreText, waveText, deliveryText;
 
 	TimerTrig gameStartTrig = new TimerTrig(2000f);
-	
+
 	ColorFilterShader colorFilter;
 
 	public GameScene(IGameContext context) {
@@ -94,14 +95,18 @@ public class GameScene extends GuiScene {
 		world = new World(new Vector2(0f, 9.82f), true);
 		contactListeners = new TypedContactListenerCollection();
 		world.setContactListener(contactListeners);
-		
+
+		waves = new WaveManager();
 		border = new Border(world);
 		border.load(content());
 
 		scoreText = new Text("Score:", TextAlign.center);
 		scoreText.setPosition(width * 0.5f, height * 0.15f);
 
-		font = content().loadFont("universal_fruitcake_64");
+		waveText = new Text("Wave:", TextAlign.right);
+		deliveryText = new Text("Deliver:", TextAlign.left);
+
+		font = content().loadFont("xirod_64");
 
 		state = createStateMachine();
 
@@ -125,8 +130,9 @@ public class GameScene extends GuiScene {
 		cargoAtlas.register("atlases/cargo");
 
 		Rectangle arena = border.getBorder();
-		
-		ground = new TiledGround(content().loadTexture("gfx/ground").getTexture(), arena.x, arena.y + arena.height, 24, world);
+
+		ground = new TiledGround(content().loadTexture("gfx/ground")
+				.getTexture(), arena.x, arena.y + arena.height, 24, world);
 
 		loadingArea = new LoadingArea(buildingAtlas);
 
@@ -166,49 +172,54 @@ public class GameScene extends GuiScene {
 
 		gameController = new GameController(player, cargo, loadingArea);
 
-		contactListeners.add(new TypedContactListener<PlayerShip, CargoVessel>(PlayerShip.class, CargoVessel.class) {
+		contactListeners.add(new TypedContactListener<PlayerShip, CargoVessel>(
+				PlayerShip.class, CargoVessel.class) {
 			@Override
 			protected void onCollision(PlayerShip player, CargoVessel vessel) {
 				player.setAlive(false);
 			}
 		});
-		contactListeners.add(new TypedContactListener<PlayerShip, Entity>(PlayerShip.class, Entity.class) {
+		contactListeners.add(new TypedContactListener<PlayerShip, Entity>(
+				PlayerShip.class, Entity.class) {
 			@Override
 			protected void onCollision(PlayerShip player, Entity genericEntity) {
 				player.setAlive(false);
 			}
 		});
 
-		contactListeners.add(new TypedContactListener<Cargo, Entity>(Cargo.class, Entity.class) {
+		contactListeners.add(new TypedContactListener<Cargo, Entity>(
+				Cargo.class, Entity.class) {
 			@Override
 			protected void onCollision(Cargo cargo, Entity entity) {
 				cargo.setAlive(false);
 			}
 		});
-		
+
 		starfield = new Starfield();
 		starfield.load(content());
-		
+
 		colorFilter = new ColorFilterShader(width, height, content());
 
 		reset();
 	}
 
-	private void reset() {		
+	private void reset() {
 		Rectangle arena = this.border.getBorder();
-		
+		waves.restart();
+
 		state.setState(NormalState.class);
-		player.setPosition(arena.x + arena.width / 2f, arena.y + arena.height - 400);
+		player.setPosition(arena.x + arena.width / 2f, arena.y + arena.height
+				- 400);
 		player.setAlive(true);
-		cargoVessel.setPosition(arena.x + arena.width / 2f, arena.y + arena.height -1500);
-		loadingArea.setPosition(arena.x + arena.width / 2f, arena.y + arena.height);
+		cargoVessel.setPosition(arena.x + arena.width / 2f, arena.y
+				+ arena.height - 1500);
+		loadingArea.setPosition(arena.x + arena.width / 2f, arena.y
+				+ arena.height);
 		resetCargo();
 
 		player.getBody().setLinearVelocity(0, 0);
 		cargoVessel.getBody().setLinearVelocity(0, 0);
 		gameStartTrig.reset();
-		
-		score = 0;
 
 		IAudio audio = ServiceLocator.context.locate(IAudio.class);
 		audio.pauseSong("thrust");
@@ -286,72 +297,105 @@ public class GameScene extends GuiScene {
 
 	@Override
 	protected void createUi() {
-		/*
-		 * TouchButton btnSettings = uiFactory.createRoundIconButton("cross",
-		 * "yellow", transitionInDuration());
-		 * 
-		 * btnSettings.setPosition(width * 0.9f, height * 0.2f);
-		 * 
-		 * btnSettings.addListener(new TouchButtonEventListener() {
-		 * 
-		 * @Override public void clicked(TouchButton button) {
-		 * manager.pushPopup(new AreYouSureDialogScene(context, new
-		 * DialogResultListener() {
-		 * 
-		 * @Override public void onClose(DialogResult result) { if(result ==
-		 * DialogResult.Yes){ close(); } } })); } });
-		 * 
-		 * elements.add(btnSettings);
-		 */
+		TouchButton btnSettings = uiFactory.createRoundIconButton("cross",
+				"yellow", transitionInDuration());
+
+		btnSettings.setPosition(width * 0.9f, height * 0.2f);
+
+		btnSettings.addListener(new TouchButtonEventListener() {
+
+			@Override
+			public void clicked(TouchButton button) {
+				IAudio audio = ServiceLocator.context.locate(IAudio.class);
+				audio.pauseSong("thrust");
+				manager.pushPopup(new AreYouSureDialogScene(context,
+						new DialogResultListener() {
+							@Override
+							public void onClose(DialogResult result) {
+								if (result == DialogResult.Yes) {
+									close();
+								}
+							}
+						}));
+			}
+		});
+
+		elements.add(btnSettings);
 	}
 
 	@Override
 	public void update(float dt) {
 
-		gameStartTrig.update(dt);
+		if (isActive()) {
 
-		if (gameStartTrig.progress() >= 1f) {
-			updatePlayerInput(dt);
-			updateCargoThrusters();
-			updatePhysics(dt);
-			checkIfCargoSuccesfullyDelivered();
-			state.update(dt, gameController);
+			gameStartTrig.update(dt);
 
-			if (!player.getAlive()) {
-				killPlayer();
+			if (gameStartTrig.progress() >= 1f) {
+				updatePlayerInput(dt);
+				updateCargoThrusters();
+				updatePhysics(dt);
+				checkIfCargoSuccesfullyDelivered();
+				state.update(dt, gameController);
+
+				if (!player.getAlive()) {
+					killPlayer();
+				}
+				if (!cargo.getAlive()) {
+					killCargo();
+				}
+			} else {
+				cam.move(cargoVessel.transform.position.x,
+						cargoVessel.transform.position.y);
 			}
-			if(!cargo.getAlive()){
-				killCargo();
-			}
+
+			player.update(dt);
+			cargoVessel.update(dt);
+			cargo.update(dt);
+			loadingArea.update(dt);
+
+			particleManager.update(dt);
+			explosionManager.update(dt);
+			updateControllerSettings(dt);
+			starfield.update(dt);
+			border.update(dt);
+
+			colorFilter.getParameters().saturation = 0.6f;
+			colorFilter.getParameters().r = 0.75f;
+			colorFilter.getParameters().g = 0.8f;
+			colorFilter.getParameters().b = 1f;
+			colorFilter.update(dt);
+
+			cam.setZoom(2f);
+			if (gameStartTrig.progress() >= 1f)
+				cam.move(player.transform.position.x,
+						player.transform.position.y);
+			ground.update(dt);
+
 		}
+		super.update(dt);
+	}
 
-		player.update(dt);
-		cargoVessel.update(dt);
-		cargo.update(dt);
-		loadingArea.update(dt);
+	@Override
+	public void updatePassive(float dt) {
 
 		particleManager.update(dt);
 		explosionManager.update(dt);
-		updateControllerSettings(dt);
-		starfield.update(dt);
-		border.update(dt);
 
 		colorFilter.getParameters().saturation = 0.6f;
 		colorFilter.getParameters().r = 0.75f;
 		colorFilter.getParameters().g = 0.8f;
-		colorFilter.getParameters().b= 1f;
+		colorFilter.getParameters().b = 1f;
 		colorFilter.update(dt);
 
-		cam.setZoom(4f);
-		if(gameStartTrig.progress() >= 1f)
-			cam.move(player.transform.position.x, player.transform.position.y);
-		ground.update(dt);
-		super.update(dt);
+		super.updatePassive(dt);
 	}
 
 	private void killCargo() {
-		explosionManager.explode(cargo.transform.position.x, cargo.transform.position.y);
+		explosionManager.explode(cargo.transform.position.x,
+				cargo.transform.position.y);
 		resetCargo();
+		waves.getCurrentDelivery().failDelivery();
+		checkWaves();
 	}
 
 	private void updateControllerSettings(float dt) {
@@ -419,9 +463,18 @@ public class GameScene extends GuiScene {
 	}
 
 	private void killPlayer() {
-		explosionManager.explode(player.transform.position.x, player.transform.position.y);
+		explosionManager.explode(player.transform.position.x,
+				player.transform.position.y);
 		ServiceLocator.context.locate(IAudio.class).play("explosion");
-		reset();
+
+		manager.pushPopup(new GameOverPopup(context,
+				new DialogResultListener() {
+					@Override
+					public void onClose(DialogResult result) {
+						reset();
+					}
+				}));
+
 	}
 
 	private void checkIfCargoSuccesfullyDelivered() {
@@ -431,12 +484,20 @@ public class GameScene extends GuiScene {
 				float speed = cargo.getBody().getLinearVelocity().len2();
 				if (speed < 0.001f) {
 					// success
-					score++;
+					waves.getCurrentDelivery().deliver();
+					checkWaves();
 					resetCargo();
 					// TODO: reset the cargo and throw sparkles and add score
 				}
 			}
 		}
+	}
+
+	private void checkWaves() {
+		if (waves.waveDone()) {
+			waves.gotoNextWave();
+		}
+		// TODO: Play funky music
 	}
 
 	private void thrust(int index) {
@@ -466,11 +527,10 @@ public class GameScene extends GuiScene {
 	@Override
 	public void draw() {
 		colorFilter.begin();
-		
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
+
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		
 		starfield.draw(spriteBatch, cam);
 
 		spriteBatch.setProjectionMatrix(cam.combined);
@@ -501,21 +561,22 @@ public class GameScene extends GuiScene {
 		 * Vector2(area.x, area.y), new Vector2(area.x, area.y + area.height));
 		 */
 
-		 Rectangle area = border.getBorder();
-		  
-		 rope.draw(spriteBatch, new Vector2(area.x, area.y), new
-		 Vector2(area.x + area.width, area.y)); rope.draw(spriteBatch, new
-		 Vector2(area.x + area.width, area.y), new Vector2(area.x +
-		 area.width, area.y + area.height)); rope.draw(spriteBatch, new
-		 Vector2(area.x, area.y + area.height), new Vector2(area.x +
-		 area.width, area.y + area.height)); rope.draw(spriteBatch, new
-		 Vector2(area.x, area.y), new Vector2(area.x, area.y + area.height));
-		 
+		/**
+		 * Rectangle area = border.getBorder();
+		 * 
+		 * rope.draw(spriteBatch, new Vector2(area.x, area.y), new
+		 * Vector2(area.x + area.width, area.y)); rope.draw(spriteBatch, new
+		 * Vector2(area.x + area.width, area.y), new Vector2(area.x +
+		 * area.width, area.y + area.height)); rope.draw(spriteBatch, new
+		 * Vector2(area.x, area.y + area.height), new Vector2(area.x +
+		 * area.width, area.y + area.height)); rope.draw(spriteBatch, new
+		 * Vector2(area.x, area.y), new Vector2(area.x, area.y + area.height));
+		 */
 
 		spriteBatch.end();
-		
+
 		colorFilter.end();
-		
+
 		colorFilter.render();
 
 		spriteBatch.setProjectionMatrix(uiCam.combined);
@@ -525,18 +586,31 @@ public class GameScene extends GuiScene {
 		if (gameController.showDropCargoButton)
 			buttonDrop.draw(spriteBatch);
 
-		if(gameStartTrig.progress() < 1f){
-			scoreText.setText("Get ready: " + gameStartTrig.getTimeLeftInSeconds());
-		}else{		
-			scoreText.setText("SCORE: " + score);
+		if (gameStartTrig.progress() < 1f) {
+			scoreText.setText("Get ready: "
+					+ gameStartTrig.getTimeLeftInSeconds());
+			scoreText.draw(font, spriteBatch);
 		}
-		scoreText.draw(font, spriteBatch);
+
+		waveText.setText("wave: " + waves.getCurrentWave());
+
+		waveText.setScale(0.5f);
+		waveText.setPosition(width * 0.48f, height * 0.05f);
+		waveText.draw(font, spriteBatch);
+
+		deliveryText.setText("delivery: "
+				+ waves.getCurrentDelivery().getDelivered() + "/"
+				+ waves.getCurrentDelivery().getBoxes());
+		deliveryText.setScale(0.5f);
+		deliveryText.setPosition(width * 0.52f, height * 0.05f);
+		deliveryText.draw(font, spriteBatch);
 		spriteBatch.end();
 
-		  cam.setZoom(cam.zoom * 0.01f); cam.update();
-		  debugRenderer.render(world, cam.getParallax(0.01f));
-		 cam.setZoom(cam.zoom * 100f);
-		
+		/*
+		 * cam.setZoom(cam.zoom * 0.01f); cam.update();
+		 * debugRenderer.render(world, cam.getParallax(0.01f));
+		 * cam.setZoom(cam.zoom * 100f);
+		 */
 
 		super.draw();
 	}
