@@ -19,7 +19,7 @@ public class GameController {
 	}
 	
 	public boolean shipIsNearCargoPickup() {
-		return loadingArea.transform.position.dst(player.transform.position) < 256f;
+		return loadingArea.transform.position.dst(player.transform.position) < 512f;
 	}
 	
 	public boolean isCarryingCargo(){

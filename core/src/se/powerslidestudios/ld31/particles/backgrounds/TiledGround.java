@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -41,7 +40,7 @@ public class TiledGround {
 		bodyDefinition.type = BodyType.StaticBody;
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(ConvertUnits.toSim(texture.getWidth()* tiles), ConvertUnits.toSim(texture.getHeight()), new Vector2(ConvertUnits.toSim(x - (texture.getWidth()) + texture.getWidth() * tiles), ConvertUnits.toSim(y + texture.getHeight()* 2f)), 0f);
+		shape.setAsBox(ConvertUnits.toSim(texture.getWidth()* tiles / 2f), ConvertUnits.toSim(texture.getHeight() / 2f));
 		
 		Body body = world.createBody(bodyDefinition);
 		body.createFixture(shape, 1f);
@@ -50,6 +49,8 @@ public class TiledGround {
 		body.setUserData(new Entity());
 		
 		shape.dispose();
+		
+		body.setTransform(ConvertUnits.toSim(x), ConvertUnits.toSim(y + texture.getHeight()), 0f);
 	
 		this.body = body;
 	}
@@ -60,6 +61,13 @@ public class TiledGround {
 	
 	public void draw(SpriteBatch spriteBatch, Camera2D cam){
 		spriteBatch.setColor(1f, 1f, 1f, 1f);
-		spriteBatch.draw(texture, x, y, texture.getWidth() * tiles, texture.getHeight(), 0, 0, texture.getWidth() * tiles * 4, texture.getHeight(), false, true);
+		spriteBatch.draw(
+				texture, 
+				x - (texture.getWidth() * tiles) / 2f, 
+				y, 
+				texture.getWidth() * tiles, 
+				texture.getHeight(),
+				0, 0, texture.getWidth() * tiles * 4, texture.getHeight(),
+				false, true);
 	}
 }

@@ -57,7 +57,7 @@ public class PlayerShip extends Entity{
 		bodyDefinition.type = BodyType.DynamicBody;
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(ConvertUnits.toSim(getSource().width), ConvertUnits.toSim(getSource().height));
+		shape.setAsBox(ConvertUnits.toSim(getSource().width / 2f), ConvertUnits.toSim(getSource().height / 2f));
 				
 		Body body = world.createBody(bodyDefinition);
 		body.setUserData(this);

@@ -1,8 +1,35 @@
 {"frames": [
 
 {
+	"filename": "border_base.png",
+	"frame": {"x":2,"y":2,"w":368,"h":201},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":368,"h":201},
+	"sourceSize": {"w":368,"h":201},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "border_pole.png",
+	"frame": {"x":372,"y":2,"w":105,"h":732},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":105,"h":732},
+	"sourceSize": {"w":105,"h":732},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "border_roof.png",
+	"frame": {"x":479,"y":2,"w":742,"h":186},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":742,"h":186},
+	"sourceSize": {"w":742,"h":186},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
 	"filename": "ground.png",
-	"frame": {"x":2,"y":2,"w":1280,"h":211},
+	"frame": {"x":2,"y":736,"w":1280,"h":211},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":1280,"h":211},
@@ -11,7 +38,7 @@
 },
 {
 	"filename": "lamp.png",
-	"frame": {"x":1284,"y":2,"w":46,"h":237},
+	"frame": {"x":1284,"y":736,"w":46,"h":237},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":46,"h":237},
@@ -20,7 +47,7 @@
 },
 {
 	"filename": "loading_area_base.png",
-	"frame": {"x":1332,"y":2,"w":265,"h":120},
+	"frame": {"x":1332,"y":736,"w":265,"h":120},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":265,"h":120},
@@ -29,7 +56,7 @@
 },
 {
 	"filename": "loading_area_conveyor_belt.png",
-	"frame": {"x":1599,"y":2,"w":62,"h":116},
+	"frame": {"x":1599,"y":736,"w":62,"h":116},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":62,"h":116},
@@ -41,8 +68,8 @@
 	"version": "1.0",
 	"image": "buildings.png",
 	"format": "RGBA8888",
-	"size": {"w":2048,"h":256},
+	"size": {"w":2048,"h":1024},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:8bddc545bdb507cb255e43b62c203ce9:8c82b30abd6e368b67f02e93a5cb1147:8f670863a0ac9ac15291caba2801fd50$"
+	"smartupdate": "$TexturePacker:SmartUpdate:919f18523dd0e7055641f91f117af54f:7eaba52ed40c958c99fc21dd0bc89adb:8f670863a0ac9ac15291caba2801fd50$"
 }
 }

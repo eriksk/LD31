@@ -192,6 +192,9 @@
             <filename>loading_area_base.png</filename>
             <filename>loading_area_conveyor_belt.png</filename>
             <filename>ground.png</filename>
+            <filename>border_base.png</filename>
+            <filename>border_pole.png</filename>
+            <filename>border_roof.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

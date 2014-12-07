@@ -12,6 +12,7 @@ import se.powerslidestudios.ld31.input.DirectionalInputTouchPanels;
 import se.powerslidestudios.ld31.input.TouchArea;
 import se.powerslidestudios.ld31.particles.ExplosionManager;
 import se.powerslidestudios.ld31.particles.ParticleManager;
+import se.powerslidestudios.ld31.particles.backgrounds.Border;
 import se.powerslidestudios.ld31.particles.backgrounds.Starfield;
 import se.powerslidestudios.ld31.particles.backgrounds.TiledGround;
 import se.powerslidestudios.ld31.shaders.ColorFilterShader;
@@ -36,6 +37,7 @@ import se.skoggy.utils.TimerTrig;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Joint;
@@ -46,6 +48,7 @@ public class GameScene extends GuiScene {
 
 	TiledGround ground;
 	Starfield starfield;
+	Border border;
 
 	PlayerShip player;
 	CargoVessel cargoVessel;
@@ -91,6 +94,9 @@ public class GameScene extends GuiScene {
 		world = new World(new Vector2(0f, 9.82f), true);
 		contactListeners = new TypedContactListenerCollection();
 		world.setContactListener(contactListeners);
+		
+		border = new Border(world);
+		border.load(content());
 
 		scoreText = new Text("Score:", TextAlign.center);
 		scoreText.setPosition(width * 0.5f, height * 0.15f);
@@ -118,14 +124,13 @@ public class GameScene extends GuiScene {
 		TextureAtlas cargoAtlas = new TextureAtlas(content());
 		cargoAtlas.register("atlases/cargo");
 
-		ground = new TiledGround(content().loadTexture("gfx/ground")
-				.getTexture(), -1000, 200, 24, world);
+		Rectangle arena = border.getBorder();
+		
+		ground = new TiledGround(content().loadTexture("gfx/ground").getTexture(), arena.x, arena.y + arena.height, 24, world);
 
 		loadingArea = new LoadingArea(buildingAtlas);
 
 		cargo = new Cargo(cargoAtlas, world);
-		cargo.setPosition(loadingArea.transform.position.x,
-				loadingArea.transform.position.y);
 		cargo.getBody().setActive(false);
 
 		TextureAtlas ropeAtlas = new TextureAtlas(content());
@@ -174,7 +179,6 @@ public class GameScene extends GuiScene {
 			}
 		});
 
-		
 		contactListeners.add(new TypedContactListener<Cargo, Entity>(Cargo.class, Entity.class) {
 			@Override
 			protected void onCollision(Cargo cargo, Entity entity) {
@@ -190,12 +194,14 @@ public class GameScene extends GuiScene {
 		reset();
 	}
 
-	private void reset() {
+	private void reset() {		
+		Rectangle arena = this.border.getBorder();
+		
 		state.setState(NormalState.class);
-		player.setPosition(0, -100);
+		player.setPosition(arena.x + arena.width / 2f, arena.y + arena.height - 400);
 		player.setAlive(true);
-		cargoVessel.setPosition(300, -1000);
-		loadingArea.setPosition(0, 156);
+		cargoVessel.setPosition(arena.x + arena.width / 2f, arena.y + arena.height -1500);
+		loadingArea.setPosition(arena.x + arena.width / 2f, arena.y + arena.height);
 		resetCargo();
 
 		player.getBody().setLinearVelocity(0, 0);
@@ -210,7 +216,7 @@ public class GameScene extends GuiScene {
 
 	private void resetCargo() {
 		cargo.setPosition(loadingArea.transform.position.x,
-				loadingArea.transform.position.y);
+				loadingArea.transform.position.y - 100);
 		cargo.getBody().setActive(false);
 		disconnectCargoJoint();
 		cargo.getBody().setLinearVelocity(0, 0);
@@ -242,7 +248,7 @@ public class GameScene extends GuiScene {
 		rope.localAnchorB.y = ConvertUnits
 				.toSim(cargo.getJointPositionOffset().y);
 
-		rope.maxLength = ConvertUnits.toSim(256f);
+		rope.maxLength = ConvertUnits.toSim(128f);
 
 		Joint joint = world.createJoint(rope);
 		ship.setCargoJoint(joint);
@@ -328,6 +334,7 @@ public class GameScene extends GuiScene {
 		explosionManager.update(dt);
 		updateControllerSettings(dt);
 		starfield.update(dt);
+		border.update(dt);
 
 		colorFilter.getParameters().saturation = 0.6f;
 		colorFilter.getParameters().r = 0.75f;
@@ -335,7 +342,7 @@ public class GameScene extends GuiScene {
 		colorFilter.getParameters().b= 1f;
 		colorFilter.update(dt);
 
-		cam.setZoom(1.5f);
+		cam.setZoom(4f);
 		if(gameStartTrig.progress() >= 1f)
 			cam.move(player.transform.position.x, player.transform.position.y);
 		ground.update(dt);
@@ -469,6 +476,7 @@ public class GameScene extends GuiScene {
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
 		ground.draw(spriteBatch, cam);
+		border.draw(spriteBatch);
 		loadingArea.draw(spriteBatch);
 		if (player.getAlive() && gameStartTrig.progress() >= 1f)
 			player.draw(spriteBatch);
@@ -493,6 +501,17 @@ public class GameScene extends GuiScene {
 		 * Vector2(area.x, area.y), new Vector2(area.x, area.y + area.height));
 		 */
 
+		 Rectangle area = border.getBorder();
+		  
+		 rope.draw(spriteBatch, new Vector2(area.x, area.y), new
+		 Vector2(area.x + area.width, area.y)); rope.draw(spriteBatch, new
+		 Vector2(area.x + area.width, area.y), new Vector2(area.x +
+		 area.width, area.y + area.height)); rope.draw(spriteBatch, new
+		 Vector2(area.x, area.y + area.height), new Vector2(area.x +
+		 area.width, area.y + area.height)); rope.draw(spriteBatch, new
+		 Vector2(area.x, area.y), new Vector2(area.x, area.y + area.height));
+		 
+
 		spriteBatch.end();
 		
 		colorFilter.end();
@@ -514,12 +533,10 @@ public class GameScene extends GuiScene {
 		scoreText.draw(font, spriteBatch);
 		spriteBatch.end();
 
-		/*
-		 * 
-		 * cam.setZoom(cam.zoom * 0.01f); cam.update();
-		 * debugRenderer.render(world, cam.getParallax(0.01f));
-		 * cam.setZoom(cam.zoom * 100f);
-		 */
+		  cam.setZoom(cam.zoom * 0.01f); cam.update();
+		  debugRenderer.render(world, cam.getParallax(0.01f));
+		 cam.setZoom(cam.zoom * 100f);
+		
 
 		super.draw();
 	}

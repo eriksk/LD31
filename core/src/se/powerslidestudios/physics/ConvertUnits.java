@@ -2,7 +2,7 @@ package se.powerslidestudios.physics;
 
 public class ConvertUnits {
 
-	static final float WORLD_TO_BOX = 0.005f;
+	static final float WORLD_TO_BOX = 0.01f;
 	static final float BOX_WORLD_TO = 100f;
 
 	public static float toSim(float world){

@@ -35,13 +35,13 @@ public class CargoVessel extends Entity{
 		bodyDefinition.type = BodyType.StaticBody;
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(ConvertUnits.toSim(getSource().width * 0.8f), ConvertUnits.toSim(getSource().height * 0.6f), new Vector2(ConvertUnits.toSim(240), ConvertUnits.toSim(-32)), 0f);
+		shape.setAsBox(ConvertUnits.toSim(getSource().width * 0.8f)/ 2f, ConvertUnits.toSim(getSource().height * 0.6f)/ 2f, new Vector2(ConvertUnits.toSim(140), ConvertUnits.toSim(0f)), 0f);
 		
 		PolygonShape loadingAreaBorderLeft = new PolygonShape();
-		loadingAreaBorderLeft.setAsBox(ConvertUnits.toSim(16), ConvertUnits.toSim(128), new Vector2(ConvertUnits.toSim(-800), ConvertUnits.toSim(-400)), 0f);
+		loadingAreaBorderLeft.setAsBox(ConvertUnits.toSim(16/2f), ConvertUnits.toSim(128/2f), new Vector2(ConvertUnits.toSim(-800)/2f, ConvertUnits.toSim(-400)/2f), 0f);
 
 		PolygonShape loadingAreaBorderRight = new PolygonShape();
-		loadingAreaBorderRight.setAsBox(ConvertUnits.toSim(16), ConvertUnits.toSim(128), new Vector2(ConvertUnits.toSim(420), ConvertUnits.toSim(-400)), 0f);
+		loadingAreaBorderRight.setAsBox(ConvertUnits.toSim(16/2f), ConvertUnits.toSim(128/2f), new Vector2(ConvertUnits.toSim(420)/2f, ConvertUnits.toSim(-400)/2f), 0f);
 		
 		Body body = world.createBody(bodyDefinition);
 		body.createFixture(shape, 1f);
