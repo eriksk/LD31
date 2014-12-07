@@ -82,6 +82,8 @@ public class GameScene extends GuiScene {
 	TimerTrig gameStartTrig = new TimerTrig(2000f);
 
 	ColorFilterShader colorFilter;
+	
+	Entity overlay;
 
 	public GameScene(IGameContext context) {
 		super(context);
@@ -90,6 +92,10 @@ public class GameScene extends GuiScene {
 	@Override
 	public void load() {
 		super.load();
+		
+		overlay = new Entity(content().loadTexture("gfx/black"));
+		overlay.setScale(2.5f);
+		overlay.setPosition(width * 0.5f, height * 0.5f);
 
 		debugRenderer = new Box2DDebugRenderer();
 		world = new World(new Vector2(0f, 9.82f), true);
@@ -200,6 +206,8 @@ public class GameScene extends GuiScene {
 
 		colorFilter = new ColorFilterShader(width, height, content());
 
+		ServiceLocator.context.locate(IAudio.class).playSong("song_1", true);
+		
 		reset();
 	}
 
@@ -242,6 +250,7 @@ public class GameScene extends GuiScene {
 		return stateMachine;
 	}
 
+
 	private void connectCargoToShip(Cargo cargo, PlayerShip ship) {
 		cargo.getBody().setActive(true);
 
@@ -275,7 +284,7 @@ public class GameScene extends GuiScene {
 
 	@Override
 	public float transitionInDuration() {
-		return 500f;
+		return 1000f;
 	}
 
 	@Override
@@ -285,6 +294,7 @@ public class GameScene extends GuiScene {
 
 	public void close() {
 		setState(SceneState.TransitionOut);
+		ServiceLocator.context.locate(IAudio.class).stopSong("song_1");
 	}
 
 	@Override
@@ -292,7 +302,7 @@ public class GameScene extends GuiScene {
 		super.stateChanged(state);
 
 		if (state == SceneState.Done)
-			manager.pushScene(new MenuScene(context));
+			manager.pushScene(new MenuScene(context, false));
 	}
 
 	@Override
@@ -395,6 +405,8 @@ public class GameScene extends GuiScene {
 				cargo.transform.position.y);
 		resetCargo();
 		waves.getCurrentDelivery().failDelivery();
+		ServiceLocator.context.locate(IAudio.class).play("delivery_failed");
+		ServiceLocator.context.locate(IAudio.class).play("explosion");
 		checkWaves();
 	}
 
@@ -465,6 +477,7 @@ public class GameScene extends GuiScene {
 	private void killPlayer() {
 		explosionManager.explode(player.transform.position.x,
 				player.transform.position.y);
+		ServiceLocator.context.locate(IAudio.class).pauseSong("thrust");
 		ServiceLocator.context.locate(IAudio.class).play("explosion");
 
 		manager.pushPopup(new GameOverPopup(context,
@@ -485,6 +498,7 @@ public class GameScene extends GuiScene {
 				if (speed < 0.001f) {
 					// success
 					waves.getCurrentDelivery().deliver();
+					ServiceLocator.context.locate(IAudio.class).play("delivery_successful");
 					checkWaves();
 					resetCargo();
 					// TODO: reset the cargo and throw sparkles and add score
@@ -496,6 +510,7 @@ public class GameScene extends GuiScene {
 	private void checkWaves() {
 		if (waves.waveDone()) {
 			waves.gotoNextWave();
+			ServiceLocator.context.locate(IAudio.class).play("next_wave");
 		}
 		// TODO: Play funky music
 	}
@@ -595,15 +610,20 @@ public class GameScene extends GuiScene {
 		waveText.setText("wave: " + waves.getCurrentWave());
 
 		waveText.setScale(0.5f);
-		waveText.setPosition(width * 0.48f, height * 0.05f);
+		waveText.setPosition(width * 0.44f, height * 0.05f);
 		waveText.draw(font, spriteBatch);
 
 		deliveryText.setText("delivery: "
 				+ waves.getCurrentDelivery().getDelivered() + "/"
 				+ waves.getCurrentDelivery().getBoxes());
 		deliveryText.setScale(0.5f);
-		deliveryText.setPosition(width * 0.52f, height * 0.05f);
+		deliveryText.setPosition(width * 0.54f, height * 0.05f);
 		deliveryText.draw(font, spriteBatch);
+		
+		if(super.state == SceneState.TransitionIn){
+			overlay.draw(spriteBatch);
+		}
+		
 		spriteBatch.end();
 
 		/*

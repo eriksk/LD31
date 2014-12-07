@@ -60,6 +60,18 @@ public class TiledGround {
 	}
 	
 	public void draw(SpriteBatch spriteBatch, Camera2D cam){
+
+
+		spriteBatch.setColor(0.8f, 0.8f, 0.8f, 1f);
+		spriteBatch.draw(
+				texture, 
+				x - (texture.getWidth() * tiles) / 2f, 
+				y - 80, 
+				texture.getWidth() * tiles, 
+				texture.getHeight(),
+				300, 0, texture.getWidth() * tiles * 4, texture.getHeight(),
+				false, true);
+		
 		spriteBatch.setColor(1f, 1f, 1f, 1f);
 		spriteBatch.draw(
 				texture, 
@@ -67,6 +79,16 @@ public class TiledGround {
 				y, 
 				texture.getWidth() * tiles, 
 				texture.getHeight(),
+				0, 0, texture.getWidth() * tiles * 4, texture.getHeight(),
+				false, true);
+
+		spriteBatch.setColor(0.8f, 0.8f, 0.8f, 1f);
+		spriteBatch.draw(
+				texture, 
+				x - (texture.getWidth() * tiles) / 2f, 
+				y + 150, 
+				texture.getWidth() * tiles, 
+				texture.getHeight() * 4,
 				0, 0, texture.getWidth() * tiles * 4, texture.getHeight(),
 				false, true);
 	}

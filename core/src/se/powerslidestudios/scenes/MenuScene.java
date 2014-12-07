@@ -1,21 +1,8 @@
 package se.powerslidestudios.scenes;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Interpolation;
-
-import se.skoggy.atlases.TextureAtlas;
-import se.skoggy.entity.Entity;
+import se.powerslidestudios.ld31.particles.backgrounds.Starfield;
 import se.skoggy.game.IGameContext;
-import se.skoggy.scenes.Scene;
 import se.skoggy.scenes.SceneState;
-import se.skoggy.tweens.ITweenable;
-import se.skoggy.tweens.Tween;
-import se.skoggy.tweens.stock.AlphaTween;
-import se.skoggy.tweens.stock.BackAndForthInterpolation;
 import se.skoggy.tweens.stock.PositionXYTween;
 import se.skoggy.tweens.stock.ScaleXTween;
 import se.skoggy.tweens.stock.ScaleXYTween;
@@ -25,16 +12,23 @@ import se.skoggy.ui.TextAlign;
 import se.skoggy.ui.TouchButton;
 import se.skoggy.ui.TouchButtonEventListener;
 import se.skoggy.ui.UIElement;
-import se.skoggy.ui.UiFactory;
-import se.skoggy.utils.Camera2D;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Interpolation;
 
 public class MenuScene extends GuiScene{
 	
 	Text gameTitle;
 	BitmapFont titleFont;
+	
+	Starfield starfield;
+	private boolean showInitialHelp;
 		
-	public MenuScene(IGameContext context) {
+	public MenuScene(IGameContext context, boolean showInitialHelp) {
 		super(context);
+		this.showInitialHelp = showInitialHelp;
 	}
 
 	@Override
@@ -42,13 +36,15 @@ public class MenuScene extends GuiScene{
 		super.load();
 				
 		
-		titleFont = content().loadFont("universal_fruitcake_64");
-		gameTitle = new Text("Game Title!", TextAlign.center);
+		titleFont = content().loadFont("xirod_64");
+		gameTitle = new Text("SPACE CARGO", TextAlign.center);
 		
-		tween(new ScaleXTween(gameTitle, Interpolation.elasticOut, 1000f, 0f, 2f).setWait(200f));
-		tween(new ScaleYTween(gameTitle, Interpolation.elasticOut, 1000f, 1f, 2f));
+		tween(new ScaleXTween(gameTitle, Interpolation.elasticOut, 1000f, 0f, 1f).setWait(200f));
+		tween(new ScaleYTween(gameTitle, Interpolation.elasticOut, 1000f, 0f, 1f));
 		tween(new PositionXYTween(gameTitle, Interpolation.pow2, 300f, width * 0.5f, height * -0.25f, width * 0.5f, height * 0.35f));
 		
+		starfield = new Starfield();
+		starfield.load(content());
 	}
 	
 	@Override
@@ -62,20 +58,25 @@ public class MenuScene extends GuiScene{
 		if(state == SceneState.Done){
 			manager.pushScene(new GameScene(context));
 		}
+		if(state == SceneState.Active){
+			if(showInitialHelp){
+				manager.pushPopup(new HelpPopup(context));
+			}
+		}
 	}
 	
 	@Override
 	protected void createUi() {
 		final TouchButton btnPlay = uiFactory.createRoundIconButton("play", "yellow", 1000f);
-		final TouchButton btnRestart = uiFactory.createRoundIconButton("restart", "yellow", 1000f);
-		final TouchButton btnSettings = uiFactory.createRoundIconButton("settings", "yellow", 1000f);
+//		final TouchButton btnRestart = uiFactory.createRoundIconButton("restart", "yellow", 1000f);
+		final TouchButton btnSettings = uiFactory.createRoundIconButton("cross", "red", 1000f);
 
 		btnPlay.setPosition(width * 0.25f, height * 0.75f);
-		btnRestart.setPosition(width * 0.5f, height * 0.75f);
+		//btnRestart.setPosition(width * 0.5f, height * 0.75f);
 		btnSettings.setPosition(width * 0.75f, height * 0.75f);
 				
 		elements.add(btnPlay);
-		elements.add(btnRestart);
+		//elements.add(btnRestart);
 		elements.add(btnSettings);
 				
 		btnSettings.addListener(new TouchButtonEventListener() {
@@ -97,7 +98,7 @@ public class MenuScene extends GuiScene{
 			public void clicked(TouchButton button) {
 				setState(SceneState.TransitionOut);
 				tween(new ScaleXYTween(btnPlay, Interpolation.pow2, transitionOutDuration(), 1f, 0f));
-				tween(new ScaleXYTween(btnRestart, Interpolation.pow2, transitionOutDuration(), 1f, 0f));
+				//tween(new ScaleXYTween(btnRestart, Interpolation.pow2, transitionOutDuration(), 1f, 0f));
 				tween(new ScaleXYTween(btnSettings, Interpolation.pow2, transitionOutDuration(), 1f, 0f));
 			}
 		});	
@@ -105,6 +106,7 @@ public class MenuScene extends GuiScene{
 
 	@Override
 	public void update(float dt) {	
+		starfield.update(dt);
 		super.update(dt);
 	}
 	
@@ -112,7 +114,14 @@ public class MenuScene extends GuiScene{
 	@Override
 	public void draw() {	
 		spriteBatch.setProjectionMatrix(uiCam.combined);
+
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		starfield.draw(spriteBatch, cam);
+		
 		spriteBatch.begin();
+
 		for (UIElement uiElement : elements) {
 			uiElement.draw(uiFactory.getFont(), spriteBatch);
 		}

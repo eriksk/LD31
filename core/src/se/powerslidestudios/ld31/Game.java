@@ -1,6 +1,9 @@
 package se.powerslidestudios.ld31;
 
-import se.powerslidestudios.scenes.GameScene;
+import se.powerslidestudios.scenes.IntroScene;
+import se.powerslidestudios.scenes.MenuScene;
+import se.powerslidestudios.scenes.SplashScreen;
+import se.powerslidestudios.scenes.WaitScene;
 import se.skoggy.content.ContentManager;
 import se.skoggy.game.IGameContext;
 import se.skoggy.input.ITouchInput;
@@ -39,9 +42,15 @@ public class Game extends BaseGame implements IGameContext{
 		
 		
 		manager = new SceneManager();
-		manager.pushScene(new GameScene(this));
+		//manager.pushScene(new GameScene(this));
 		//manager.pushScene(new MenuScene(this));
-		//manager.pushScene(new WaitScene(this, 1000f, new SplashScreen(this, "skoggy_logo", new SplashScreen(this, "ludum_dare_31", new MenuScene(this)))));
+		
+		manager.pushScene(
+				new WaitScene(this, 1000f, 
+						new SplashScreen(this, "skoggy_logo", 
+								new SplashScreen(this, "ludum_dare_31", 
+										new IntroScene(this, 
+												new MenuScene(this, true))))));
 	}
 	
 	@Override
