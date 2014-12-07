@@ -14,10 +14,11 @@ import com.badlogic.gdx.physics.box2d.World;
 public class Cargo extends Entity{
 
 	Body body;
+	private boolean alive;
 	
 	public Cargo(TextureAtlas atlas, World world) {
 		super(atlas.getTexture("cargo_box"));
-	
+		alive = true;
 		createPhysicsBody(world);
 	}
 
@@ -35,6 +36,14 @@ public class Cargo extends Entity{
 		shape.dispose();
 	
 		this.body = body;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+	
+	public boolean getAlive(){
+		return alive;
 	}
 	
 	public Body getBody() {

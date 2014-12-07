@@ -5,8 +5,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 
 public abstract class TypedContactListener<T1, T2>{
 	
-	private Class<T1> class1;
-	private Class<T2> class2;
+	protected Class<T1> class1;
+	protected Class<T2> class2;
 
 	public TypedContactListener(Class<T1> class1, Class<T2> class2) {
 		this.class1 = class1;

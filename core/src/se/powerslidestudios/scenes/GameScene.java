@@ -161,8 +161,7 @@ public class GameScene extends GuiScene {
 
 		gameController = new GameController(player, cargo, loadingArea);
 
-		contactListeners.add(new TypedContactListener<PlayerShip, CargoVessel>(
-				PlayerShip.class, CargoVessel.class) {
+		contactListeners.add(new TypedContactListener<PlayerShip, CargoVessel>(PlayerShip.class, CargoVessel.class) {
 			@Override
 			protected void onCollision(PlayerShip player, CargoVessel vessel) {
 				player.setAlive(false);
@@ -172,6 +171,14 @@ public class GameScene extends GuiScene {
 			@Override
 			protected void onCollision(PlayerShip player, Entity genericEntity) {
 				player.setAlive(false);
+			}
+		});
+
+		
+		contactListeners.add(new TypedContactListener<Cargo, Entity>(Cargo.class, Entity.class) {
+			@Override
+			protected void onCollision(Cargo cargo, Entity entity) {
+				cargo.setAlive(false);
 			}
 		});
 		
@@ -184,10 +191,8 @@ public class GameScene extends GuiScene {
 	}
 
 	private void reset() {
-		disconnectCargoJoint();
-
 		state.setState(NormalState.class);
-		player.setPosition(0, 0);
+		player.setPosition(0, -100);
 		player.setAlive(true);
 		cargoVessel.setPosition(300, -1000);
 		loadingArea.setPosition(0, 156);
@@ -207,7 +212,9 @@ public class GameScene extends GuiScene {
 		cargo.setPosition(loadingArea.transform.position.x,
 				loadingArea.transform.position.y);
 		cargo.getBody().setActive(false);
+		disconnectCargoJoint();
 		cargo.getBody().setLinearVelocity(0, 0);
+		cargo.setAlive(true);
 	}
 
 	private GameStateMachine createStateMachine() {
@@ -307,6 +314,9 @@ public class GameScene extends GuiScene {
 			if (!player.getAlive()) {
 				killPlayer();
 			}
+			if(!cargo.getAlive()){
+				killCargo();
+			}
 		}
 
 		player.update(dt);
@@ -330,6 +340,11 @@ public class GameScene extends GuiScene {
 			cam.move(player.transform.position.x, player.transform.position.y);
 		ground.update(dt);
 		super.update(dt);
+	}
+
+	private void killCargo() {
+		explosionManager.explode(cargo.transform.position.x, cargo.transform.position.y);
+		resetCargo();
 	}
 
 	private void updateControllerSettings(float dt) {
